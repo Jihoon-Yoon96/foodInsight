@@ -99,50 +99,49 @@
 const route = useRoute()
 const router = useRouter()
 
-// 1. 검색어 상태 관리 (URL 쿼리에서 초기값 가져옴)
+// 1. 검색어 및 데이터 상태 관리
 const searchQuery = ref(route.query.raw || route.query.prod || route.query.fact || '')
 const items = ref([])
 const pending = ref(false)
 
-// 2. 데이터 페칭 로직 (서버 API 호출)
+// 2. 데이터 페칭 로직
 const fetchFoodData = async () => {
   if (!searchQuery.value) return
 
   pending.value = true
   try {
-    // 우리가 만든 server/api/food.get.ts 를 호출합니다.
+    // 내부 서버 API 호출
     const response = await $fetch('/api/food', {
-      query: {
-        raw: searchQuery.value, // 원재료명 위주로 검색 전송
-        prod: searchQuery.value,
-        fact: searchQuery.value
-      }
+      query: { raw: searchQuery.value }
     })
 
-    // 식품안나라 C002 데이터는 response.items 에 들어있도록 서버에서 정의함
-    items.value = response.items || []
+    // 서버 응답 구조(items)에 따라 데이터 할당
+    items.value = response?.items || []
   } catch (error) {
-    console.error("데이터 로드 실패:", error)
+    console.error("데이터 로드 에러:", error)
     items.value = []
   } finally {
     pending.value = false
   }
 }
 
-// 3. 검색어 입력 후 엔터 시 새로고침 없이 데이터만 갱신
+// 3. 검색 이벤트 핸들러
 const refreshData = () => {
+  if (!searchQuery.value) return
   router.push({ query: { raw: searchQuery.value } })
   fetchFoodData()
 }
 
-// 페이지 로드 시 최초 실행
+// 초기 로드 시 실행
 onMounted(() => {
   fetchFoodData()
 })
 
-// URL 쿼리가 바뀔 때(예: 메인에서 검색해서 올 때) 대응
+// URL 쿼리 변경 감시 (메인에서 검색하여 넘어올 때 대응)
 watch(() => route.query.raw, (newVal) => {
-  searchQuery.value = newVal
-  fetchFoodData()
+  if (newVal) {
+    searchQuery.value = newVal
+    fetchFoodData()
+  }
 })
 </script>
