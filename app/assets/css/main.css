@@ -1,0 +1,18 @@
+/* assets/css/main.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 기획안용 깔끔한 폰트 고정 */
+body {
+    font-family: "Pretendard Variable", sans-serif;
+    @apply antialiased text-gray-900 bg-gray-50;
+}
+
+/* 스크롤바 숨기기 (선택사항) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    @apply bg-emerald-200 rounded-full;
+}
