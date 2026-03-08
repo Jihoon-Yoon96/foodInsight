@@ -5,24 +5,10 @@
         <NuxtLink to="/" class="text-2xl font-black text-emerald-600 tracking-tighter shrink-0">FoodInsight</NuxtLink>
         <div class="flex-1 max-w-3xl mx-8">
           <div class="flex items-stretch w-full bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500 transition-all shadow-inner h-12">
-            <input
-                v-model="searchForm.productName"
-                type="text"
-                class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold border-r border-gray-200 placeholder:text-gray-400 placeholder:font-normal"
-                placeholder="품목명 (예: 핫도그)"
-                @keyup.enter="refreshData"
-            />
-            <input
-                v-model="searchForm.factoryName"
-                type="text"
-                class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold placeholder:text-gray-400 placeholder:font-normal"
-                placeholder="제조사명 (예: 풀무원)"
-                @keyup.enter="refreshData"
-            />
+            <input v-model="searchForm.productName" type="text" class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold border-r border-gray-200 placeholder:text-gray-400" placeholder="품목명 (예: 핫도그)" @keyup.enter="refreshData" />
+            <input v-model="searchForm.factoryName" type="text" class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold placeholder:text-gray-400" placeholder="제조사명 (예: 풀무원)" @keyup.enter="refreshData" />
             <button @click="refreshData" class="px-5 bg-white border-l border-gray-200 text-gray-400 hover:text-emerald-600 transition-colors flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </button>
           </div>
         </div>
@@ -30,7 +16,6 @@
     </header>
 
     <div class="max-w-7xl mx-auto py-10 px-6 flex gap-10">
-
       <aside class="w-64 shrink-0 hidden lg:block">
         <div class="sticky top-32">
           <h3 class="text-sm font-bold text-gray-400 mb-4 tracking-widest uppercase flex items-center gap-2">
@@ -40,26 +25,15 @@
           <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
             <ul v-if="recentSearches.length > 0" class="space-y-3">
               <li v-for="(item, index) in recentSearches" :key="index" class="flex items-center justify-between group">
-                <span
-                    @click="clickRecentSearch(item)"
-                    class="text-[13px] font-medium text-gray-600 cursor-pointer hover:text-emerald-600 line-clamp-2 leading-tight transition-colors w-full break-all pr-2"
-                    :title="item.label"
-                >
-                  {{ item.label }}
-                </span>
+                <span @click="clickRecentSearch(item)" class="text-[13px] font-medium text-gray-600 cursor-pointer hover:text-emerald-600 line-clamp-2 leading-tight transition-colors w-full break-all pr-2" :title="item.label">{{ item.label }}</span>
                 <button @click.stop="removeRecentSearch(index)" class="text-gray-300 hover:text-red-500 transition-colors shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </li>
             </ul>
-            <div v-else class="text-center text-sm text-gray-400 py-4">
-              최근 검색 기록이 없습니다.
-            </div>
-
+            <div v-else class="text-center text-sm text-gray-400 py-4">최근 검색 기록이 없습니다.</div>
             <div v-if="recentSearches.length > 0" class="mt-4 pt-4 border-t border-gray-50">
-              <button @click="clearRecentSearches" class="w-full py-2 text-xs font-bold text-gray-400 bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-gray-600 transition">
-                기록 전체 삭제
-              </button>
+              <button @click="clearRecentSearches" class="w-full py-2 text-xs font-bold text-gray-400 bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-gray-600 transition">기록 전체 삭제</button>
             </div>
           </div>
         </div>
@@ -75,20 +49,8 @@
           </div>
 
           <div class="flex bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
-            <button
-                @click="changeSort('recent')"
-                :class="sortOrder === 'recent' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'"
-                class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all"
-            >
-              최신순
-            </button>
-            <button
-                @click="changeSort('name')"
-                :class="sortOrder === 'name' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'"
-                class="px-4 py-1.5 text-xs font-medium rounded-lg transition-all"
-            >
-              품목명순
-            </button>
+            <button @click="changeSort('recent')" :class="sortOrder === 'recent' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'" class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all">최신순</button>
+            <button @click="changeSort('name')" :class="sortOrder === 'name' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'" class="px-4 py-1.5 text-xs font-medium rounded-lg transition-all">품목명순</button>
           </div>
         </div>
 
@@ -123,48 +85,31 @@
               <div class="text-right border-l pl-8 border-gray-100 shrink-0">
                 <p class="text-[10px] font-black text-gray-400 mb-1 uppercase tracking-widest">보고일자</p>
                 <p class="text-2xl font-black text-emerald-600 tracking-tight">{{ formatDate(item.PRMS_DT) }}</p>
-                <button class="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md w-full">리포트</button>
+                <button
+                    @click="openReportModal(item)"
+                    class="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md w-full"
+                >
+                  리포트
+                </button>
               </div>
             </div>
           </div>
 
           <div class="mt-12 flex justify-center items-center gap-2">
-            <button
-                @click="changePage(currentPage - 1)"
-                :disabled="currentPage === 1"
-                class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-600 disabled:opacity-30 disabled:hover:text-gray-400 disabled:hover:border-gray-200 transition-all"
-            >
+            <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-600 disabled:opacity-30 transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
             </button>
-
-            <div
-                class="flex items-center gap-1 px-4 py-2 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-bold cursor-pointer hover:border-emerald-300 transition-colors"
-                @click="isEditingPage = true"
-            >
+            <div class="flex items-center gap-1 px-4 py-2 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-bold cursor-pointer hover:border-emerald-300 transition-colors" @click="isEditingPage = true">
               <template v-if="!isEditingPage">
                 <span class="text-emerald-600">{{ currentPage }}</span>
                 <span class="text-gray-300">/</span>
                 <span class="text-gray-500">{{ Math.max(1, Math.ceil(totalItems / 10)) }}</span>
               </template>
               <template v-else>
-                <input
-                    v-model="inputPage"
-                    type="number"
-                    class="w-12 text-center border-none focus:ring-0 text-emerald-600 bg-transparent p-0"
-                    :max="Math.ceil(totalItems / 10)"
-                    min="1"
-                    @keyup.enter="goToInputPage"
-                    @blur="isEditingPage = false"
-                    ref="pageInputRef"
-                />
+                <input v-model="inputPage" type="number" class="w-12 text-center border-none focus:ring-0 text-emerald-600 bg-transparent p-0" :max="Math.ceil(totalItems / 10)" min="1" @keyup.enter="goToInputPage" @blur="isEditingPage = false" ref="pageInputRef" />
               </template>
             </div>
-
-            <button
-                @click="changePage(currentPage + 1)"
-                :disabled="currentPage >= Math.ceil(totalItems / 10)"
-                class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-600 disabled:opacity-30 disabled:hover:text-gray-400 disabled:hover:border-gray-200 transition-all"
-            >
+            <button @click="changePage(currentPage + 1)" :disabled="currentPage >= Math.ceil(totalItems / 10)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-600 disabled:opacity-30 transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
             </button>
           </div>
@@ -175,16 +120,23 @@
         </div>
       </main>
     </div>
+
+    <ReportModal
+        :is-open="isModalOpen"
+        :is-loading="isReportLoading"
+        :selected-item="selectedItem"
+        :report-data="reportData"
+        @close="closeReportModal"
+    />
   </div>
 </template>
 
 <script setup>
+// 기존 로직 100% 동일
 const route = useRoute()
 const router = useRouter()
 
-// 1. 상태 관리 (정렬 기준 'sortOrder' 추가)
 const searchForm = reactive({
-  // rawMaterial: route.query.raw || '',
   productName: route.query.prod || '',
   factoryName: route.query.fact || ''
 })
@@ -192,7 +144,7 @@ const searchForm = reactive({
 const items = ref([])
 const totalItems = ref(0)
 const currentPage = ref(Number(route.query.page) || 1)
-const sortOrder = ref(route.query.sort || 'recent') // 'recent' or 'name'
+const sortOrder = ref(route.query.sort || 'recent')
 const pending = ref(false)
 
 const recentSearches = ref([])
@@ -200,23 +152,74 @@ const isEditingPage = ref(false)
 const inputPage = ref(currentPage.value)
 const pageInputRef = ref(null)
 
+const isModalOpen = ref(false)
+const isReportLoading = ref(false)
+const selectedItem = ref(null)
+const reportData = ref(null)
+
 const createSearchLabel = (form) => {
   const parts = []
-  // if (form.rawMaterial) parts.push(`원재료: ${form.rawMaterial}`)
   if (form.productName) parts.push(`품목: ${form.productName}`)
   if (form.factoryName) parts.push(`제조사: ${form.factoryName}`)
   return parts.join(' + ') || '전체'
 }
-
 const currentSearchLabel = computed(() => createSearchLabel(searchForm))
 
-// 날짜 포맷 함수 (YYYYMMDD -> YYYY.MM.DD)
 const formatDate = (dateString) => {
   if (!dateString || dateString.length !== 8) return dateString || '-'
   return `${dateString.slice(0, 4)}.${dateString.slice(4, 6)}.${dateString.slice(6, 8)}`
 }
 
-// --- [최근 검색어 기능] ---
+const openReportModal = async (item) => {
+  selectedItem.value = item
+  isModalOpen.value = true
+  isReportLoading.value = true
+  reportData.value = null
+
+  try {
+    const response = await $fetch('/api/report', {
+      query: { prod: item.PRDLST_NM, fact: item.BSSH_NM }
+    })
+
+    reportData.value = response
+    saveToDashboard(item, response) // response 객체 통째로 전달
+  } catch (error) {
+    console.error("리포트 생성 실패:", error)
+  } finally {
+    isReportLoading.value = false
+  }
+}
+
+const closeReportModal = () => {
+  isModalOpen.value = false
+  selectedItem.value = null
+  reportData.value = null
+}
+
+// ✨ 변경된 대시보드 저장 로직
+const saveToDashboard = (item, reportResponse) => {
+  if (process.server) return
+
+  const saved = JSON.parse(localStorage.getItem('dashboardItems') || '[]')
+
+  const newEntry = {
+    reportNo: item.PRDLST_REPORT_NO, // 💡 중복 방지의 고유 키값 (신고번호)
+    productName: item.PRDLST_NM,
+    factoryName: item.BSSH_NM,
+    priceHistory: reportResponse.priceHistory, // 4년치 가격 배열 저장
+    savedAt: new Date().toISOString()
+  }
+
+  // 신고번호 기준으로 동일한 제품이 있으면 제거 (최신 기록으로 덮어쓰기 위해)
+  const filtered = saved.filter(x => x.reportNo !== newEntry.reportNo)
+
+  // 배열 맨 앞에 새 항목 추가
+  filtered.unshift(newEntry)
+
+  // 최대 20개 저장
+  localStorage.setItem('dashboardItems', JSON.stringify(filtered.slice(0, 20)))
+}
+
 const loadRecentSearches = () => {
   if (process.client) {
     const saved = localStorage.getItem('recentSearches')
@@ -227,21 +230,12 @@ const loadRecentSearches = () => {
 const saveRecentSearch = (form) => {
   if (!form.productName && !form.factoryName) return
   if (process.server) return
-
   const label = createSearchLabel(form)
-  const newEntry = {
-    label,
-    query: {
-      prod: form.productName,
-      fact: form.factoryName
-    }
-  }
-
+  const newEntry = { label, query: { prod: form.productName, fact: form.factoryName } }
   let searches = [...recentSearches.value]
   searches = searches.filter(t => t.label !== label)
   searches.unshift(newEntry)
   if (searches.length > 10) searches = searches.slice(0, 10)
-
   recentSearches.value = searches
   localStorage.setItem('recentSearches', JSON.stringify(searches))
 }
@@ -262,26 +256,21 @@ const clickRecentSearch = (item) => {
   refreshData()
 }
 
-// --- [데이터 페칭 및 정렬 기능] ---
 const fetchFoodData = async () => {
   if (!searchForm.productName && !searchForm.factoryName) return
-
   pending.value = true
   try {
     const response = await $fetch('/api/food', {
       query: {
-        // raw: searchForm.rawMaterial || undefined,
         prod: searchForm.productName || undefined,
         fact: searchForm.factoryName || undefined,
         page: currentPage.value,
-        sort: sortOrder.value // 서버로 정렬 상태 전송
+        sort: sortOrder.value
       }
     })
-
     items.value = response?.items || []
     totalItems.value = response?.total || 0
     saveRecentSearch(searchForm)
-
     if (process.client) window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
     items.value = []
@@ -290,33 +279,17 @@ const fetchFoodData = async () => {
   }
 }
 
-// 정렬 기준이 바뀔 때 (1페이지로 강제 이동)
 const changeSort = (sort) => {
   if (sortOrder.value === sort) return
   sortOrder.value = sort
-  currentPage.value = 1 // 정렬을 바꾸면 무조건 1페이지
-
-  router.push({
-    query: {
-      prod: searchForm.productName || undefined,
-      fact: searchForm.factoryName || undefined,
-      sort: sortOrder.value,
-      page: 1
-    }
-  })
+  currentPage.value = 1
+  router.push({ query: { prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: 1 } })
   fetchFoodData()
 }
 
 const changePage = (newPage) => {
   currentPage.value = newPage
-  router.push({
-    query: {
-      prod: searchForm.productName || undefined,
-      fact: searchForm.factoryName || undefined,
-      sort: sortOrder.value, // 기존 정렬 기준 유지
-      page: newPage
-    }
-  })
+  router.push({ query: { prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: newPage } })
   fetchFoodData()
 }
 
@@ -330,14 +303,7 @@ const goToInputPage = () => {
 const refreshData = () => {
   if (!searchForm.productName && !searchForm.factoryName) return
   currentPage.value = 1
-  router.push({
-    query: {
-      prod: searchForm.productName || undefined,
-      fact: searchForm.factoryName || undefined,
-      sort: sortOrder.value, // 검색 버튼 눌러도 정렬 유지
-      page: 1
-    }
-  })
+  router.push({ query: { prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: 1 } })
   fetchFoodData()
 }
 
@@ -358,7 +324,6 @@ watch(() => route.query, (newQ) => {
   searchForm.factoryName = newQ.fact || ''
   currentPage.value = Number(newQ.page) || 1
   sortOrder.value = newQ.sort || 'recent'
-
   if (items.value.length === 0) fetchFoodData()
 }, { deep: true })
 </script>

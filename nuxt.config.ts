@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // 서버에서만 접근 가능한 키 (Private)
     foodApiKey: process.env.FOOD_API_KEY,
+    geminiApiKey: process.env.GEMINI_API_KEY,
 
     public: {
       // 클라이언트(브라우저)에서도 필요한 정보가 있다면 여기에 넣습니다.
