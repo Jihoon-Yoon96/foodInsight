@@ -73,6 +73,23 @@
               <span v-if="totalItems > 0" class="text-gray-400 font-light text-lg">({{ totalItems }}건)</span>
             </h2>
           </div>
+
+          <div class="flex bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+            <button
+                @click="changeSort('recent')"
+                :class="sortOrder === 'recent' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'"
+                class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all"
+            >
+              최신순
+            </button>
+            <button
+                @click="changeSort('name')"
+                :class="sortOrder === 'name' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'"
+                class="px-4 py-1.5 text-xs font-medium rounded-lg transition-all"
+            >
+              품목명순
+            </button>
+          </div>
         </div>
 
         <div v-if="pending" class="flex flex-col items-center justify-center py-40">
@@ -89,7 +106,6 @@
                 </div>
                 <div>
                   <div class="flex items-center gap-2 mb-2">
-<!--                    <span class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-md uppercase">C002 DATA</span>-->
                     <span class="text-xs font-bold text-emerald-600">{{ item.BSSH_NM }}</span>
                   </div>
                   <h3 class="text-2xl font-black text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">
@@ -98,8 +114,16 @@
                   <p class="text-[15px] text-gray-500 mb-2 line-clamp-1">
                     <span class="font-bold text-gray-400">원재료:</span> {{ item.RAWMTRL_NM }}
                   </p>
-                  <p class="text-xs text-gray-400 font-medium italic">신고번호: {{ item.PRDLST_REPORT_NO }}</p>
+                  <p class="text-xs text-gray-400 font-medium italic">
+                    신고번호: {{ item.PRDLST_REPORT_NO }}
+                  </p>
                 </div>
+              </div>
+
+              <div class="text-right border-l pl-8 border-gray-100 shrink-0">
+                <p class="text-[10px] font-black text-gray-400 mb-1 uppercase tracking-widest">보고일자</p>
+                <p class="text-2xl font-black text-emerald-600 tracking-tight">{{ formatDate(item.PRMS_DT) }}</p>
+                <button class="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md w-full">리포트</button>
               </div>
             </div>
           </div>
@@ -158,8 +182,9 @@
 const route = useRoute()
 const router = useRouter()
 
+// 1. 상태 관리 (정렬 기준 'sortOrder' 추가)
 const searchForm = reactive({
-  // rawMaterial: route.query.raw || '', // [주석처리]
+  // rawMaterial: route.query.raw || '',
   productName: route.query.prod || '',
   factoryName: route.query.fact || ''
 })
@@ -167,6 +192,7 @@ const searchForm = reactive({
 const items = ref([])
 const totalItems = ref(0)
 const currentPage = ref(Number(route.query.page) || 1)
+const sortOrder = ref(route.query.sort || 'recent') // 'recent' or 'name'
 const pending = ref(false)
 
 const recentSearches = ref([])
@@ -176,7 +202,7 @@ const pageInputRef = ref(null)
 
 const createSearchLabel = (form) => {
   const parts = []
-  // if (form.rawMaterial) parts.push(`원재료: ${form.rawMaterial}`) // [주석처리]
+  // if (form.rawMaterial) parts.push(`원재료: ${form.rawMaterial}`)
   if (form.productName) parts.push(`품목: ${form.productName}`)
   if (form.factoryName) parts.push(`제조사: ${form.factoryName}`)
   return parts.join(' + ') || '전체'
@@ -184,6 +210,13 @@ const createSearchLabel = (form) => {
 
 const currentSearchLabel = computed(() => createSearchLabel(searchForm))
 
+// 날짜 포맷 함수 (YYYYMMDD -> YYYY.MM.DD)
+const formatDate = (dateString) => {
+  if (!dateString || dateString.length !== 8) return dateString || '-'
+  return `${dateString.slice(0, 4)}.${dateString.slice(4, 6)}.${dateString.slice(6, 8)}`
+}
+
+// --- [최근 검색어 기능] ---
 const loadRecentSearches = () => {
   if (process.client) {
     const saved = localStorage.getItem('recentSearches')
@@ -192,7 +225,6 @@ const loadRecentSearches = () => {
 }
 
 const saveRecentSearch = (form) => {
-  // if (!form.rawMaterial && !form.productName && !form.factoryName) return
   if (!form.productName && !form.factoryName) return
   if (process.server) return
 
@@ -200,7 +232,6 @@ const saveRecentSearch = (form) => {
   const newEntry = {
     label,
     query: {
-      // raw: form.rawMaterial, // [주석처리]
       prod: form.productName,
       fact: form.factoryName
     }
@@ -226,24 +257,24 @@ const clearRecentSearches = () => {
 }
 
 const clickRecentSearch = (item) => {
-  // searchForm.rawMaterial = item.query.raw || '' // [주석처리]
   searchForm.productName = item.query.prod || ''
   searchForm.factoryName = item.query.fact || ''
   refreshData()
 }
 
+// --- [데이터 페칭 및 정렬 기능] ---
 const fetchFoodData = async () => {
-  // if (!searchForm.rawMaterial && !searchForm.productName && !searchForm.factoryName) return
   if (!searchForm.productName && !searchForm.factoryName) return
 
   pending.value = true
   try {
     const response = await $fetch('/api/food', {
       query: {
-        // raw: searchForm.rawMaterial || undefined, // [주석처리]
+        // raw: searchForm.rawMaterial || undefined,
         prod: searchForm.productName || undefined,
         fact: searchForm.factoryName || undefined,
-        page: currentPage.value
+        page: currentPage.value,
+        sort: sortOrder.value // 서버로 정렬 상태 전송
       }
     })
 
@@ -259,13 +290,30 @@ const fetchFoodData = async () => {
   }
 }
 
+// 정렬 기준이 바뀔 때 (1페이지로 강제 이동)
+const changeSort = (sort) => {
+  if (sortOrder.value === sort) return
+  sortOrder.value = sort
+  currentPage.value = 1 // 정렬을 바꾸면 무조건 1페이지
+
+  router.push({
+    query: {
+      prod: searchForm.productName || undefined,
+      fact: searchForm.factoryName || undefined,
+      sort: sortOrder.value,
+      page: 1
+    }
+  })
+  fetchFoodData()
+}
+
 const changePage = (newPage) => {
   currentPage.value = newPage
   router.push({
     query: {
-      // raw: searchForm.rawMaterial || undefined,
       prod: searchForm.productName || undefined,
       fact: searchForm.factoryName || undefined,
+      sort: sortOrder.value, // 기존 정렬 기준 유지
       page: newPage
     }
   })
@@ -280,14 +328,13 @@ const goToInputPage = () => {
 }
 
 const refreshData = () => {
-  // if (!searchForm.rawMaterial && !searchForm.productName && !searchForm.factoryName) return
   if (!searchForm.productName && !searchForm.factoryName) return
   currentPage.value = 1
   router.push({
     query: {
-      // raw: searchForm.rawMaterial || undefined,
       prod: searchForm.productName || undefined,
       fact: searchForm.factoryName || undefined,
+      sort: sortOrder.value, // 검색 버튼 눌러도 정렬 유지
       page: 1
     }
   })
@@ -307,10 +354,11 @@ watch(isEditingPage, (newVal) => {
 })
 
 watch(() => route.query, (newQ) => {
-  // searchForm.rawMaterial = newQ.raw || ''
   searchForm.productName = newQ.prod || ''
   searchForm.factoryName = newQ.fact || ''
   currentPage.value = Number(newQ.page) || 1
+  sortOrder.value = newQ.sort || 'recent'
+
   if (items.value.length === 0) fetchFoodData()
 }, { deep: true })
 </script>
