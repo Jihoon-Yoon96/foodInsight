@@ -3,18 +3,32 @@
     <header class="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm">
       <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <NuxtLink to="/" class="text-2xl font-black text-emerald-600 tracking-tighter shrink-0">FoodInsight</NuxtLink>
-        <div class="flex-1 max-w-2xl mx-12">
-          <div class="relative group">
+        <div class="flex-1 max-w-3xl mx-8">
+          <div class="flex items-stretch w-full bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500 transition-all shadow-inner h-12">
             <input
-                v-model="searchQuery"
+                v-model="searchForm.rawMaterial"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-6 focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all text-sm font-semibold"
-                placeholder="원재료, 제품명, 제조사 통합 검색"
+                class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold border-r border-gray-200 placeholder:text-gray-400 placeholder:font-normal"
+                placeholder="원재료명"
                 @keyup.enter="refreshData"
             />
-            <button @click="refreshData" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-600">
+            <input
+                v-model="searchForm.productName"
+                type="text"
+                class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold border-r border-gray-200 placeholder:text-gray-400 placeholder:font-normal"
+                placeholder="품목명"
+                @keyup.enter="refreshData"
+            />
+            <input
+                v-model="searchForm.factoryName"
+                type="text"
+                class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold placeholder:text-gray-400 placeholder:font-normal"
+                placeholder="제조사명"
+                @keyup.enter="refreshData"
+            />
+            <button @click="refreshData" class="px-5 bg-white border-l border-gray-200 text-gray-400 hover:text-emerald-600 transition-colors flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
           </div>
@@ -23,18 +37,37 @@
     </header>
 
     <div class="max-w-7xl mx-auto py-10 px-6 flex gap-10">
+
       <aside class="w-64 shrink-0 hidden lg:block">
         <div class="sticky top-32">
-          <h3 class="text-sm font-bold text-gray-400 mb-6 tracking-widest uppercase">Smart Filter</h3>
-          <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-5">
-            <div v-for="label in ['HACCP 인증', '스마트공장', 'OEM 가능', '소량생산 가능']" :key="label">
-              <label class="flex items-center gap-3 cursor-pointer group">
-                <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
-                <span class="text-sm font-medium text-gray-600 group-hover:text-emerald-600 transition">{{ label }}</span>
-              </label>
+          <h3 class="text-sm font-bold text-gray-400 mb-4 tracking-widest uppercase flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            최근 검색어
+          </h3>
+          <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+            <ul v-if="recentSearches.length > 0" class="space-y-3">
+              <li v-for="(item, index) in recentSearches" :key="index" class="flex items-center justify-between group">
+                <span
+                    @click="clickRecentSearch(item)"
+                    class="text-[13px] font-medium text-gray-600 cursor-pointer hover:text-emerald-600 line-clamp-2 leading-tight transition-colors w-full break-all pr-2"
+                    :title="item.label"
+                >
+                  {{ item.label }}
+                </span>
+                <button @click.stop="removeRecentSearch(index)" class="text-gray-300 hover:text-red-500 transition-colors shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </li>
+            </ul>
+            <div v-else class="text-center text-sm text-gray-400 py-4">
+              최근 검색 기록이 없습니다.
             </div>
-            <hr class="border-gray-50">
-            <button class="w-full py-2 text-xs font-bold text-emerald-600 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition">필터 초기화</button>
+
+            <div v-if="recentSearches.length > 0" class="mt-4 pt-4 border-t border-gray-50">
+              <button @click="clearRecentSearches" class="w-full py-2 text-xs font-bold text-gray-400 bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-gray-600 transition">
+                기록 전체 삭제
+              </button>
+            </div>
           </div>
         </div>
       </aside>
@@ -43,7 +76,8 @@
         <div class="mb-8 flex justify-between items-center">
           <div>
             <h2 class="text-2xl font-bold text-gray-900 leading-none">
-              '<span class="text-emerald-600">{{ searchQuery }}</span>' <span class="text-gray-400 font-light text-lg">탐색 결과 ({{ totalItems }}건)</span>
+              '<span class="text-emerald-600">{{ currentSearchLabel }}</span>' 탐색 결과
+              <span v-if="totalItems > 0" class="text-gray-400 font-light text-lg">({{ totalItems }}건)</span>
             </h2>
           </div>
           <div class="flex bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
@@ -61,7 +95,7 @@
           <div class="grid grid-cols-1 gap-6">
             <div v-for="(item, index) in items" :key="index" class="bg-white rounded-3xl border border-gray-100 p-8 flex justify-between items-center hover:border-emerald-200 hover:shadow-lg transition-all shadow-sm group">
               <div class="flex gap-8 items-center">
-                <div class="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform">
+                <div class="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-7h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
@@ -69,9 +103,11 @@
                 <div>
                   <div class="flex items-center gap-2 mb-2">
                     <span class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-md uppercase">C002 DATA</span>
-                    <span class="text-xs font-bold text-emerald-600">{{ item.BSSH_NM }}</span> </div>
+                    <span class="text-xs font-bold text-emerald-600">{{ item.BSSH_NM }}</span>
+                  </div>
                   <h3 class="text-2xl font-black text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">
-                    {{ item.PRDLST_NM }} </h3>
+                    {{ item.PRDLST_NM }}
+                  </h3>
                   <p class="text-[15px] text-gray-500 mb-2 line-clamp-1">
                     <span class="font-bold text-gray-400">원재료:</span> {{ item.RAWMATERIAL_NM }}
                   </p>
@@ -79,10 +115,10 @@
                 </div>
               </div>
 
-              <div class="text-right border-l pl-8 border-gray-100">
+              <div class="text-right border-l pl-8 border-gray-100 shrink-0">
                 <p class="text-[10px] font-black text-gray-300 mb-1 uppercase tracking-widest">매칭 지수</p>
                 <p class="text-3xl font-black text-emerald-600">98%</p>
-                <button class="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md">리포트</button>
+                <button class="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md w-full">리포트</button>
               </div>
             </div>
           </div>
@@ -96,7 +132,10 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
             </button>
 
-            <div class="flex items-center gap-1 px-4 py-2 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-bold cursor-pointer hover:border-emerald-300 transition-colors" @click="isEditingPage = true">
+            <div
+                class="flex items-center gap-1 px-4 py-2 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-bold cursor-pointer hover:border-emerald-300 transition-colors"
+                @click="isEditingPage = true"
+            >
               <template v-if="!isEditingPage">
                 <span class="text-emerald-600">{{ currentPage }}</span>
                 <span class="text-gray-300">/</span>
@@ -111,7 +150,7 @@
                     min="1"
                     @keyup.enter="goToInputPage"
                     @blur="isEditingPage = false"
-                    ref="pageInput"
+                    ref="pageInputRef"
                 />
               </template>
             </div>
@@ -128,7 +167,7 @@
 
         <div v-else class="text-center py-40 bg-white rounded-3xl border border-dashed border-gray-200">
           <p class="text-gray-400 font-medium">검색된 식품 제조 정보가 없습니다.</p>
-          <p class="text-sm text-gray-300 mt-2">입력하신 키워드가 원재료명 또는 제품명에 포함되어 있는지 확인해 보세요.</p>
+          <p class="text-sm text-gray-300 mt-2">입력하신 키워드가 존재하는지 다시 한번 확인해 보세요.</p>
         </div>
       </main>
     </div>
@@ -139,51 +178,103 @@
 const route = useRoute()
 const router = useRouter()
 
-// 1. 상태 관리
-const searchQuery = ref(route.query.raw || route.query.prod || route.query.fact || '')
+// 1. 3가지 검색어 상태 관리 객체 (URL 쿼리에서 초기값 가져옴)
+const searchForm = reactive({
+  rawMaterial: route.query.raw || '',
+  productName: route.query.prod || '',
+  factoryName: route.query.fact || ''
+})
+
 const items = ref([])
 const totalItems = ref(0)
 const currentPage = ref(Number(route.query.page) || 1)
 const pending = ref(false)
 
+const recentSearches = ref([])
 const isEditingPage = ref(false)
 const inputPage = ref(currentPage.value)
-const pageInput = ref(null)
+const pageInputRef = ref(null)
 
-// 입력한 페이지로 이동하는 함수
-const goToInputPage = () => {
-  const targetPage = Math.min(Math.max(1, inputPage.value), Math.ceil(totalItems.value / 10))
-  isEditingPage.value = false
-  changePage(targetPage)
+// 현재 검색된 폼을 하나의 문자열(Label)로 예쁘게 묶어주는 함수
+const createSearchLabel = (form) => {
+  const parts = []
+  if (form.rawMaterial) parts.push(`원재료: ${form.rawMaterial}`)
+  if (form.productName) parts.push(`품목: ${form.productName}`)
+  if (form.factoryName) parts.push(`제조사: ${form.factoryName}`)
+  return parts.join(' + ') || '검색어 없음'
 }
 
-// 입력창이 뜰 때 자동으로 포커스 주기
-watch(isEditingPage, (newVal) => {
-  if (newVal) {
-    inputPage.value = currentPage.value
-    nextTick(() => {
-      pageInput.value?.focus()
-    })
-  }
-})
+// 화면 노출용 계산된 속성
+const currentSearchLabel = computed(() => createSearchLabel(searchForm))
 
-// 2. 데이터 페칭 로직
+// --- [최근 검색어 기능] ---
+const loadRecentSearches = () => {
+  if (process.client) {
+    const saved = localStorage.getItem('recentSearches')
+    if (saved) recentSearches.value = JSON.parse(saved)
+  }
+}
+
+const saveRecentSearch = (form) => {
+  if (!form.rawMaterial && !form.productName && !form.factoryName) return
+  if (process.server) return
+
+  const label = createSearchLabel(form)
+  // 저장할 객체 형태
+  const newEntry = {
+    label,
+    query: { raw: form.rawMaterial, prod: form.productName, fact: form.factoryName }
+  }
+
+  let searches = [...recentSearches.value]
+  // 중복된 레이블은 제거
+  searches = searches.filter(t => t.label !== label)
+  // 최상단에 추가
+  searches.unshift(newEntry)
+  // 최대 10개 유지
+  if (searches.length > 10) searches = searches.slice(0, 10)
+
+  recentSearches.value = searches
+  localStorage.setItem('recentSearches', JSON.stringify(searches))
+}
+
+const removeRecentSearch = (index) => {
+  recentSearches.value.splice(index, 1)
+  localStorage.setItem('recentSearches', JSON.stringify(recentSearches.value))
+}
+
+const clearRecentSearches = () => {
+  recentSearches.value = []
+  localStorage.removeItem('recentSearches')
+}
+
+// 최근 검색어 클릭 시 폼에 채워넣고 검색
+const clickRecentSearch = (item) => {
+  searchForm.rawMaterial = item.query.raw || ''
+  searchForm.productName = item.query.prod || ''
+  searchForm.factoryName = item.query.fact || ''
+  refreshData()
+}
+
+// --- [데이터 통신 및 페이징] ---
 const fetchFoodData = async () => {
-  if (!searchQuery.value) return
+  if (!searchForm.rawMaterial && !searchForm.productName && !searchForm.factoryName) return
 
   pending.value = true
   try {
     const response = await $fetch('/api/food', {
       query: {
-        raw: searchQuery.value,
-        page: currentPage.value // 페이지 번호 전달
+        raw: searchForm.rawMaterial || undefined,
+        prod: searchForm.productName || undefined,
+        fact: searchForm.factoryName || undefined,
+        page: currentPage.value
       }
     })
 
     items.value = response?.items || []
     totalItems.value = response?.total || 0
+    saveRecentSearch(searchForm) // 데이터 호출 시 검색어 기록
 
-    // 페이지 이동 시 상단으로 스크롤
     if (process.client) window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
     console.error("데이터 로드 에러:", error)
@@ -193,30 +284,81 @@ const fetchFoodData = async () => {
   }
 }
 
-// 3. 핸들러 함수
+// 이전/다음 버튼 또는 직접 이동 시 호출
 const changePage = (newPage) => {
   currentPage.value = newPage
-  router.push({ query: { ...route.query, page: newPage } })
+  router.push({
+    query: {
+      raw: searchForm.rawMaterial || undefined,
+      prod: searchForm.productName || undefined,
+      fact: searchForm.factoryName || undefined,
+      page: newPage
+    }
+  })
   fetchFoodData()
 }
 
+// 직접 입력 엔터 시
+const goToInputPage = () => {
+  const maxPage = Math.max(1, Math.ceil(totalItems.value / 10))
+  const targetPage = Math.min(Math.max(1, inputPage.value), maxPage)
+  isEditingPage.value = false
+  changePage(targetPage)
+}
+
+// 상단 검색 버튼 및 엔터 시 호출 (1페이지부터 렌더링)
 const refreshData = () => {
-  if (!searchQuery.value) return
+  if (!searchForm.rawMaterial && !searchForm.productName && !searchForm.factoryName) {
+    alert('검색어를 하나 이상 입력해 주세요.')
+    return
+  }
   currentPage.value = 1
-  router.push({ query: { raw: searchQuery.value, page: 1 } })
+  router.push({
+    query: {
+      raw: searchForm.rawMaterial || undefined,
+      prod: searchForm.productName || undefined,
+      fact: searchForm.factoryName || undefined,
+      page: 1
+    }
+  })
   fetchFoodData()
 }
 
-// 4. 생명주기 및 감시
+// --- [생명주기 및 감시자] ---
 onMounted(() => {
+  loadRecentSearches()
   fetchFoodData()
 })
 
-watch(() => route.query.raw, (newVal) => {
-  if (newVal !== searchQuery.value) {
-    searchQuery.value = newVal
-    currentPage.value = 1
-    fetchFoodData()
+watch(isEditingPage, (newVal) => {
+  if (newVal) {
+    inputPage.value = currentPage.value
+    nextTick(() => {
+      pageInputRef.value?.focus()
+    })
   }
 })
+
+// URL 쿼리가 바뀔 때(뒤로가기 등) 상태 동기화
+watch(() => route.query, (newQ) => {
+  searchForm.rawMaterial = newQ.raw || ''
+  searchForm.productName = newQ.prod || ''
+  searchForm.factoryName = newQ.fact || ''
+  currentPage.value = Number(newQ.page) || 1
+  // 동일한 조건이 아닐 때만 다시 호출
+  if (items.value.length === 0) fetchFoodData()
+}, { deep: true })
+
 </script>
+
+<style scoped>
+/* 입력창 클릭 시 기본 스타일(테두리) 제거 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>
