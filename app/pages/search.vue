@@ -109,7 +109,7 @@
                     {{ item.PRDLST_NM }}
                   </h3>
                   <p class="text-[15px] text-gray-500 mb-2 line-clamp-1">
-                    <span class="font-bold text-gray-400">원재료:</span> {{ item.RAWMATERIAL_NM }}
+                    <span class="font-bold text-gray-400">원재료:</span> {{ item.RAWMTRL_NM }}
                   </p>
                   <p class="text-xs text-gray-400 font-medium italic">신고번호: {{ item.PRDLST_REPORT_NO }}</p>
                 </div>
