@@ -48,8 +48,8 @@
 
     <div class="mt-16 w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
 
-      <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-emerald-50 flex flex-col gap-6 hover:border-emerald-200 hover:shadow-md transition duration-300 h-80">
-        <div class="flex items-center gap-4">
+      <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-emerald-50 flex flex-col hover:border-emerald-200 hover:shadow-md transition duration-300 h-[420px]">
+        <div class="flex items-center gap-4 mb-6">
           <div class="p-3 bg-emerald-50 rounded-xl">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           </div>
@@ -79,22 +79,33 @@
         </div>
       </div>
 
-      <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-emerald-50 flex flex-col gap-6 hover:border-emerald-200 hover:shadow-md transition duration-300 h-80">
-        <div class="flex items-center gap-4">
-          <div class="p-3 bg-emerald-600 rounded-xl">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+      <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-emerald-50 flex flex-col hover:border-emerald-200 hover:shadow-md transition duration-300 h-[420px]">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6">
+          <div class="flex items-center gap-4">
+            <div class="p-3 bg-emerald-600 rounded-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+            </div>
+            <h4 class="font-bold text-xl text-gray-800 tracking-tight">대시보드</h4>
           </div>
-          <h4 class="font-bold text-xl text-gray-800 tracking-tight">대시보드</h4>
+
+          <div class="flex bg-gray-50 border border-gray-100 rounded-lg p-1">
+            <button @click="dashboardSortOrder = 'recent'" :class="dashboardSortOrder === 'recent' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-400 hover:text-gray-600'" class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">등록순</button>
+            <button @click="dashboardSortOrder = 'wholesale'" :class="dashboardSortOrder === 'wholesale' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-400 hover:text-gray-600'" class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">도매가순</button>
+            <button @click="dashboardSortOrder = 'retail'" :class="dashboardSortOrder === 'retail' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-400 hover:text-gray-600'" class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">소매가순</button>
+          </div>
         </div>
 
         <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-          <ul v-if="dashboardItems.length > 0" class="space-y-3">
-            <li v-for="(item, index) in dashboardItems.slice(0, 5)" :key="index" class="bg-gray-50 border border-gray-100 px-4 py-3 rounded-xl flex items-center justify-between">
-              <div class="min-w-0 pr-4">
-                <p class="text-[15px] font-bold text-gray-800 truncate">{{ item.productName }}</p>
-                <p class="text-xs font-medium text-gray-500 truncate">{{ item.factoryName }}</p>
+          <ul v-if="sortedDashboardItems.length > 0" class="space-y-3">
+            <li v-for="(item, index) in sortedDashboardItems" :key="index" @click="openDashboardModal(item)" class="bg-white border border-gray-200 hover:border-emerald-300 hover:shadow-md px-4 py-3 rounded-xl flex items-center justify-between cursor-pointer transition-all group">
+              <div class="min-w-0 pr-4 flex-1">
+                <p class="text-[15px] font-bold text-gray-800 group-hover:text-emerald-700 truncate transition-colors">{{ item.productName }}</p>
+                <p class="text-[11px] font-medium text-gray-500 truncate mt-0.5">{{ item.factoryName }}</p>
               </div>
-              <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded-md uppercase shrink-0">저장됨</span>
+              <div class="text-right shrink-0">
+                <p class="text-[10px] text-gray-400 mb-0.5">최신 도매가 <span class="font-bold text-emerald-600 ml-1">{{ getLatestPrice(item).wholesale.toLocaleString() }}원</span></p>
+                <p class="text-[10px] text-gray-400">최신 소매가 <span class="font-bold text-gray-800 ml-1">{{ getLatestPrice(item).retail.toLocaleString() }}원</span></p>
+              </div>
             </li>
           </ul>
           <div v-else class="h-full flex flex-col items-center justify-center text-center pb-6">
@@ -107,6 +118,12 @@
       </div>
 
     </div>
+
+    <DashboardModal
+        :is-open="isModalOpen"
+        :selected-item="selectedDashboardItem"
+        @close="closeDashboardModal"
+    />
   </div>
 </template>
 
@@ -120,8 +137,12 @@ const searchForm = reactive({
 
 const recentSearches = ref([])
 const dashboardItems = ref([])
+const dashboardSortOrder = ref('recent') // recent, wholesale, retail
 
-// 컴포넌트 마운트 시 로컬스토리지에서 데이터 불러오기
+// 모달 상태
+const isModalOpen = ref(false)
+const selectedDashboardItem = ref(null)
+
 onMounted(() => {
   if (process.client) {
     recentSearches.value = JSON.parse(localStorage.getItem('recentSearches') || '[]')
@@ -129,7 +150,6 @@ onMounted(() => {
   }
 })
 
-// 메인 검색바 검색 실행
 const handleSearch = () => {
   if (!searchForm.productName && !searchForm.factoryName) {
     alert('검색어를 입력해 주세요.')
@@ -144,7 +164,6 @@ const handleSearch = () => {
   })
 }
 
-// 최근 검색어 클릭 시 검색 실행
 const clickRecentSearch = (item) => {
   router.push({
     path: '/search',
@@ -155,10 +174,42 @@ const clickRecentSearch = (item) => {
     }
   })
 }
+
+// 아이템의 가장 최신(마지막 배열) 가격 가져오기
+const getLatestPrice = (item) => {
+  if (!item.priceHistory || item.priceHistory.length === 0) return { wholesale: 0, retail: 0 }
+  return item.priceHistory[item.priceHistory.length - 1]
+}
+
+// 대시보드 정렬 로직 (Computed)
+const sortedDashboardItems = computed(() => {
+  const items = [...dashboardItems.value]
+
+  if (dashboardSortOrder.value === 'recent') {
+    return items.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))
+  } else if (dashboardSortOrder.value === 'wholesale') {
+    // 도매가 내림차순 (비싼 순)
+    return items.sort((a, b) => getLatestPrice(b).wholesale - getLatestPrice(a).wholesale)
+  } else if (dashboardSortOrder.value === 'retail') {
+    // 소매가 내림차순 (비싼 순)
+    return items.sort((a, b) => getLatestPrice(b).retail - getLatestPrice(a).retail)
+  }
+  return items
+})
+
+// 대시보드 모달 열기/닫기
+const openDashboardModal = (item) => {
+  selectedDashboardItem.value = item
+  isModalOpen.value = true
+}
+
+const closeDashboardModal = () => {
+  isModalOpen.value = false
+  setTimeout(() => { selectedDashboardItem.value = null }, 300)
+}
 </script>
 
 <style scoped>
-/* 커스텀 스크롤바 스타일링 (목록이 길어질 경우 예쁘게 처리) */
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }

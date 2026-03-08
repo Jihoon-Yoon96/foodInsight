@@ -1,68 +1,132 @@
 <template>
-  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity p-0 sm:p-4">
-    <div class="bg-white w-full max-w-3xl rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden relative flex flex-col max-h-[85vh] sm:max-h-[90vh]">
+  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity p-4">
+    <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden relative flex flex-col max-h-[90vh]">
 
-      <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 flex justify-between items-center bg-emerald-50/30">
+      <div class="px-6 sm:px-8 py-5 sm:py-6 border-b border-gray-100 flex justify-between items-center bg-emerald-50/30 shrink-0">
         <div class="min-w-0 pr-4">
-          <span class="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-black rounded-md uppercase tracking-wide">저장된 리포트</span>
-          <h2 class="text-xl sm:text-2xl font-black text-gray-900 mt-1 sm:mt-2 truncate">{{ item?.productName }}</h2>
-          <p class="text-xs sm:text-sm text-gray-500 font-medium truncate">{{ item?.factoryName }}</p>
+          <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-black rounded-md uppercase tracking-wide">
+            대시보드 분석 정보
+          </span>
+          <h2 class="text-xl sm:text-2xl font-black text-gray-900 mt-2 truncate">{{ selectedItem?.productName }}</h2>
+          <p class="text-xs sm:text-sm text-gray-500 font-medium truncate">{{ selectedItem?.factoryName }}</p>
         </div>
         <button @click="$emit('close')" class="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors shrink-0">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
 
-      <div class="p-5 sm:p-8 overflow-y-auto flex-1 space-y-6 sm:space-y-8" v-if="item">
+      <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-8">
 
-        <div>
-          <h3 class="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2 mb-3">
+        <div v-if="selectedItem?.summary">
+          <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-            AI 시장 요약
+            AI가 분석했던 정보
           </h3>
           <div class="bg-gray-50 p-4 sm:p-5 rounded-2xl border border-gray-100 text-gray-700 leading-relaxed text-[13px] sm:text-[15px]">
-            {{ item.summary || '해당 항목에 저장된 요약 정보가 없습니다. (새로 검색 후 리포트를 다시 확인해 주세요.)' }}
+            {{ selectedItem.summary }}
           </div>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-          <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-b border-gray-100">
-            <p class="text-gray-800 text-[11px] sm:text-sm font-bold tracking-wider uppercase">최근 4년 예상 도소매가 추이</p>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs sm:text-sm text-left min-w-[300px]">
-              <thead class="bg-white text-gray-400 border-b border-gray-100">
-              <tr>
-                <th class="px-4 sm:px-6 py-2 sm:py-3 font-medium">연도</th>
-                <th class="px-4 sm:px-6 py-2 sm:py-3 text-right font-medium">도매가(B2B)</th>
-                <th class="px-4 sm:px-6 py-2 sm:py-3 text-right font-medium">소매가(B2C)</th>
-              </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-50">
-              <tr v-for="price in item.priceHistory" :key="price.year" class="hover:bg-emerald-50/30 transition-colors">
-                <td class="px-4 sm:px-6 py-3 sm:py-4 font-bold text-gray-700">{{ price.year }}년</td>
-                <td class="px-4 sm:px-6 py-3 sm:py-4 text-right font-bold text-emerald-600">{{ price.wholesale.toLocaleString() }}원</td>
-                <td class="px-4 sm:px-6 py-3 sm:py-4 text-right font-bold text-gray-900">{{ price.retail.toLocaleString() }}원</td>
-              </tr>
-              </tbody>
-            </table>
+        <div v-if="selectedItem?.priceHistory && selectedItem.priceHistory.length > 0">
+          <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
+            최근 4년 예상 도/소매가 추이
+          </h3>
+
+          <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
+            <div class="flex justify-end gap-4 mb-8 min-w-[350px]">
+              <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-gray-500">
+                <span class="w-3 h-3 rounded-sm bg-emerald-500"></span>도매가(B2B)
+              </div>
+              <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-gray-500">
+                <span class="w-3 h-3 rounded-sm bg-gray-800"></span>소매가(B2C)
+              </div>
+            </div>
+
+            <div class="min-w-[350px] pt-4">
+              <div class="relative h-48 sm:h-56 w-full border-b border-gray-200 flex items-end justify-between gap-2 sm:gap-6">
+
+                <svg class="absolute inset-0 w-full h-full pointer-events-none overflow-visible z-20" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <polyline :points="getPolylinePoints('wholesale')" fill="none" stroke="#10B981" stroke-width="2" stroke-dasharray="2" vector-effect="non-scaling-stroke" />
+                  <polyline :points="getPolylinePoints('retail')" fill="none" stroke="#1F2937" stroke-width="2" vector-effect="non-scaling-stroke" />
+                </svg>
+
+                <div v-for="(price, index) in selectedItem.priceHistory" :key="price.year" class="flex-1 flex justify-center items-end h-full gap-1 sm:gap-2 relative z-10">
+
+                  <div class="relative w-1/3 sm:w-8 bg-emerald-500/80 rounded-t-sm flex justify-center hover:brightness-110 transition-all" :style="{ height: `${(price.wholesale / maxPrice) * 100}%` }">
+                    <span class="absolute -top-5 text-[9px] sm:text-[11px] font-black text-emerald-600 w-max">
+                      {{ price.wholesale.toLocaleString() }}
+                    </span>
+                  </div>
+
+                  <div class="relative w-1/3 sm:w-8 bg-gray-800/80 rounded-t-sm flex justify-center hover:brightness-110 transition-all" :style="{ height: `${(price.retail / maxPrice) * 100}%` }">
+                    <span class="absolute -top-5 text-[9px] sm:text-[11px] font-black text-gray-800 w-max">
+                      {{ price.retail.toLocaleString() }}
+                    </span>
+                  </div>
+
+                  <div class="absolute w-full flex justify-center items-center pointer-events-none z-30" :style="{ bottom: `${(price.retail / maxPrice) * 100}%` }">
+                    <div class="w-2 h-2 bg-gray-900 rounded-full border border-white"></div>
+                  </div>
+                  <div class="absolute w-full flex justify-center items-center pointer-events-none z-30" :style="{ bottom: `${(price.wholesale / maxPrice) * 100}%` }">
+                    <div class="w-2 h-2 bg-emerald-600 rounded-full border border-white"></div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="flex justify-between w-full mt-3 gap-2 sm:gap-6">
+                <div v-for="price in selectedItem.priceHistory" :key="'label-'+price.year" class="flex-1 text-center text-[10px] sm:text-xs font-bold text-gray-500">
+                  {{ price.year }}년
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
 
-      <div class="px-5 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t border-gray-100 flex justify-end">
-        <button @click="$emit('close')" class="w-full sm:w-auto px-6 py-2.5 sm:py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors shadow-md">
+      <div class="px-6 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t border-gray-100 flex justify-end shrink-0">
+        <button @click="$emit('close')" class="w-full sm:w-auto px-8 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors shadow-md">
           닫기
         </button>
       </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   isOpen: { type: Boolean, default: false },
-  item: { type: Object, default: () => null }
+  selectedItem: { type: Object, default: () => null }
 })
+
 defineEmits(['close'])
+
+// 차트 Y축 여백을 위한 최대 가격 계산 (가장 높은 값의 1.2배를 천장으로 설정)
+const maxPrice = computed(() => {
+  if (!props.selectedItem || !props.selectedItem.priceHistory || props.selectedItem.priceHistory.length === 0) {
+    return 10000
+  }
+  const highestPrice = Math.max(
+      ...props.selectedItem.priceHistory.map(p => Math.max(p.retail, p.wholesale))
+  )
+  return highestPrice * 1.2
+})
+
+// 선그래프(SVG Polyline)의 좌표(x, y)를 퍼센트로 계산하여 생성해 주는 함수
+const getPolylinePoints = (type) => {
+  if (!props.selectedItem?.priceHistory) return '';
+  return props.selectedItem.priceHistory.map((p, i) => {
+    // 항목이 4개이므로 각 블록의 정중앙 x좌표는 12.5%, 37.5%, 62.5%, 87.5% 가 됩니다.
+    const x = (i * 25) + 12.5;
+    // SVG의 y축은 위에서 아래로 내려오므로 100에서 빼줍니다.
+    const y = 100 - ((p[type] / maxPrice.value) * 100);
+    return `${x},${y}`;
+  }).join(' ');
+}
 </script>
