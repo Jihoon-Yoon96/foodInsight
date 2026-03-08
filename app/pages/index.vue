@@ -5,11 +5,11 @@
         데이터로 연결하는 식품 비즈니스 파트너
       </p>
       <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-        정확하게 찾는<br />
-        <span class="text-[#059669]">최적의 제조 파트너</span>
+        쉽고 빠르게 찾는<br />
+        <span class="text-[#059669]">최적의 영업 파트너</span>
       </h1>
       <p class="mt-4 text-gray-500 text-sm md:text-base">
-        식품 공장 및 품목 제조 데이터를 제공합니다.
+        스마트한 AI 리포트로 한눈에 파악 하세요.
       </p>
     </div>
 
