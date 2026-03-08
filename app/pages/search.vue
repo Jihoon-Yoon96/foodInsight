@@ -6,24 +6,17 @@
         <div class="flex-1 max-w-3xl mx-8">
           <div class="flex items-stretch w-full bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500 transition-all shadow-inner h-12">
             <input
-                v-model="searchForm.rawMaterial"
-                type="text"
-                class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold border-r border-gray-200 placeholder:text-gray-400 placeholder:font-normal"
-                placeholder="원재료명"
-                @keyup.enter="refreshData"
-            />
-            <input
                 v-model="searchForm.productName"
                 type="text"
                 class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold border-r border-gray-200 placeholder:text-gray-400 placeholder:font-normal"
-                placeholder="품목명"
+                placeholder="품목명 (예: 핫도그)"
                 @keyup.enter="refreshData"
             />
             <input
                 v-model="searchForm.factoryName"
                 type="text"
                 class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold placeholder:text-gray-400 placeholder:font-normal"
-                placeholder="제조사명"
+                placeholder="제조사명 (예: 풀무원)"
                 @keyup.enter="refreshData"
             />
             <button @click="refreshData" class="px-5 bg-white border-l border-gray-200 text-gray-400 hover:text-emerald-600 transition-colors flex items-center justify-center">
@@ -80,10 +73,6 @@
               <span v-if="totalItems > 0" class="text-gray-400 font-light text-lg">({{ totalItems }}건)</span>
             </h2>
           </div>
-          <div class="flex bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
-            <button class="px-4 py-1.5 text-xs font-bold bg-emerald-600 text-white rounded-lg shadow-sm">정확도순</button>
-            <button class="px-4 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 rounded-lg transition">판매량순</button>
-          </div>
         </div>
 
         <div v-if="pending" class="flex flex-col items-center justify-center py-40">
@@ -96,13 +85,11 @@
             <div v-for="(item, index) in items" :key="index" class="bg-white rounded-3xl border border-gray-100 p-8 flex justify-between items-center hover:border-emerald-200 hover:shadow-lg transition-all shadow-sm group">
               <div class="flex gap-8 items-center">
                 <div class="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-7h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-7h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                 </div>
                 <div>
                   <div class="flex items-center gap-2 mb-2">
-                    <span class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-md uppercase">C002 DATA</span>
+<!--                    <span class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-md uppercase">C002 DATA</span>-->
                     <span class="text-xs font-bold text-emerald-600">{{ item.BSSH_NM }}</span>
                   </div>
                   <h3 class="text-2xl font-black text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">
@@ -113,12 +100,6 @@
                   </p>
                   <p class="text-xs text-gray-400 font-medium italic">신고번호: {{ item.PRDLST_REPORT_NO }}</p>
                 </div>
-              </div>
-
-              <div class="text-right border-l pl-8 border-gray-100 shrink-0">
-                <p class="text-[10px] font-black text-gray-300 mb-1 uppercase tracking-widest">매칭 지수</p>
-                <p class="text-3xl font-black text-emerald-600">98%</p>
-                <button class="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md w-full">리포트</button>
               </div>
             </div>
           </div>
@@ -167,7 +148,6 @@
 
         <div v-else class="text-center py-40 bg-white rounded-3xl border border-dashed border-gray-200">
           <p class="text-gray-400 font-medium">검색된 식품 제조 정보가 없습니다.</p>
-          <p class="text-sm text-gray-300 mt-2">입력하신 키워드가 존재하는지 다시 한번 확인해 보세요.</p>
         </div>
       </main>
     </div>
@@ -178,9 +158,8 @@
 const route = useRoute()
 const router = useRouter()
 
-// 1. 3가지 검색어 상태 관리 객체 (URL 쿼리에서 초기값 가져옴)
 const searchForm = reactive({
-  rawMaterial: route.query.raw || '',
+  // rawMaterial: route.query.raw || '', // [주석처리]
   productName: route.query.prod || '',
   factoryName: route.query.fact || ''
 })
@@ -195,19 +174,16 @@ const isEditingPage = ref(false)
 const inputPage = ref(currentPage.value)
 const pageInputRef = ref(null)
 
-// 현재 검색된 폼을 하나의 문자열(Label)로 예쁘게 묶어주는 함수
 const createSearchLabel = (form) => {
   const parts = []
-  if (form.rawMaterial) parts.push(`원재료: ${form.rawMaterial}`)
+  // if (form.rawMaterial) parts.push(`원재료: ${form.rawMaterial}`) // [주석처리]
   if (form.productName) parts.push(`품목: ${form.productName}`)
   if (form.factoryName) parts.push(`제조사: ${form.factoryName}`)
-  return parts.join(' + ') || '검색어 없음'
+  return parts.join(' + ') || '전체'
 }
 
-// 화면 노출용 계산된 속성
 const currentSearchLabel = computed(() => createSearchLabel(searchForm))
 
-// --- [최근 검색어 기능] ---
 const loadRecentSearches = () => {
   if (process.client) {
     const saved = localStorage.getItem('recentSearches')
@@ -216,22 +192,23 @@ const loadRecentSearches = () => {
 }
 
 const saveRecentSearch = (form) => {
-  if (!form.rawMaterial && !form.productName && !form.factoryName) return
+  // if (!form.rawMaterial && !form.productName && !form.factoryName) return
+  if (!form.productName && !form.factoryName) return
   if (process.server) return
 
   const label = createSearchLabel(form)
-  // 저장할 객체 형태
   const newEntry = {
     label,
-    query: { raw: form.rawMaterial, prod: form.productName, fact: form.factoryName }
+    query: {
+      // raw: form.rawMaterial, // [주석처리]
+      prod: form.productName,
+      fact: form.factoryName
+    }
   }
 
   let searches = [...recentSearches.value]
-  // 중복된 레이블은 제거
   searches = searches.filter(t => t.label !== label)
-  // 최상단에 추가
   searches.unshift(newEntry)
-  // 최대 10개 유지
   if (searches.length > 10) searches = searches.slice(0, 10)
 
   recentSearches.value = searches
@@ -248,23 +225,22 @@ const clearRecentSearches = () => {
   localStorage.removeItem('recentSearches')
 }
 
-// 최근 검색어 클릭 시 폼에 채워넣고 검색
 const clickRecentSearch = (item) => {
-  searchForm.rawMaterial = item.query.raw || ''
+  // searchForm.rawMaterial = item.query.raw || '' // [주석처리]
   searchForm.productName = item.query.prod || ''
   searchForm.factoryName = item.query.fact || ''
   refreshData()
 }
 
-// --- [데이터 통신 및 페이징] ---
 const fetchFoodData = async () => {
-  if (!searchForm.rawMaterial && !searchForm.productName && !searchForm.factoryName) return
+  // if (!searchForm.rawMaterial && !searchForm.productName && !searchForm.factoryName) return
+  if (!searchForm.productName && !searchForm.factoryName) return
 
   pending.value = true
   try {
     const response = await $fetch('/api/food', {
       query: {
-        raw: searchForm.rawMaterial || undefined,
+        // raw: searchForm.rawMaterial || undefined, // [주석처리]
         prod: searchForm.productName || undefined,
         fact: searchForm.factoryName || undefined,
         page: currentPage.value
@@ -273,23 +249,21 @@ const fetchFoodData = async () => {
 
     items.value = response?.items || []
     totalItems.value = response?.total || 0
-    saveRecentSearch(searchForm) // 데이터 호출 시 검색어 기록
+    saveRecentSearch(searchForm)
 
     if (process.client) window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
-    console.error("데이터 로드 에러:", error)
     items.value = []
   } finally {
     pending.value = false
   }
 }
 
-// 이전/다음 버튼 또는 직접 이동 시 호출
 const changePage = (newPage) => {
   currentPage.value = newPage
   router.push({
     query: {
-      raw: searchForm.rawMaterial || undefined,
+      // raw: searchForm.rawMaterial || undefined,
       prod: searchForm.productName || undefined,
       fact: searchForm.factoryName || undefined,
       page: newPage
@@ -298,7 +272,6 @@ const changePage = (newPage) => {
   fetchFoodData()
 }
 
-// 직접 입력 엔터 시
 const goToInputPage = () => {
   const maxPage = Math.max(1, Math.ceil(totalItems.value / 10))
   const targetPage = Math.min(Math.max(1, inputPage.value), maxPage)
@@ -306,16 +279,13 @@ const goToInputPage = () => {
   changePage(targetPage)
 }
 
-// 상단 검색 버튼 및 엔터 시 호출 (1페이지부터 렌더링)
 const refreshData = () => {
-  if (!searchForm.rawMaterial && !searchForm.productName && !searchForm.factoryName) {
-    alert('검색어를 하나 이상 입력해 주세요.')
-    return
-  }
+  // if (!searchForm.rawMaterial && !searchForm.productName && !searchForm.factoryName) return
+  if (!searchForm.productName && !searchForm.factoryName) return
   currentPage.value = 1
   router.push({
     query: {
-      raw: searchForm.rawMaterial || undefined,
+      // raw: searchForm.rawMaterial || undefined,
       prod: searchForm.productName || undefined,
       fact: searchForm.factoryName || undefined,
       page: 1
@@ -324,7 +294,6 @@ const refreshData = () => {
   fetchFoodData()
 }
 
-// --- [생명주기 및 감시자] ---
 onMounted(() => {
   loadRecentSearches()
   fetchFoodData()
@@ -333,26 +302,20 @@ onMounted(() => {
 watch(isEditingPage, (newVal) => {
   if (newVal) {
     inputPage.value = currentPage.value
-    nextTick(() => {
-      pageInputRef.value?.focus()
-    })
+    nextTick(() => { pageInputRef.value?.focus() })
   }
 })
 
-// URL 쿼리가 바뀔 때(뒤로가기 등) 상태 동기화
 watch(() => route.query, (newQ) => {
-  searchForm.rawMaterial = newQ.raw || ''
+  // searchForm.rawMaterial = newQ.raw || ''
   searchForm.productName = newQ.prod || ''
   searchForm.factoryName = newQ.fact || ''
   currentPage.value = Number(newQ.page) || 1
-  // 동일한 조건이 아닐 때만 다시 호출
   if (items.value.length === 0) fetchFoodData()
 }, { deep: true })
-
 </script>
 
 <style scoped>
-/* 입력창 클릭 시 기본 스타일(테두리) 제거 */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
