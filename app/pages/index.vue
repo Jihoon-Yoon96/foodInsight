@@ -19,7 +19,7 @@
         <input
             v-model="searchForm.productName"
             type="text"
-            placeholder="제품명을 입력하세요 (예: 핫도그)"
+            placeholder="제품명을 입력하세요 (예: 토마토)"
             class="w-full bg-transparent text-lg font-semibold focus:outline-none placeholder:text-gray-300"
             @keyup.enter="handleSearch"
         />
@@ -30,7 +30,7 @@
         <input
             v-model="searchForm.factoryName"
             type="text"
-            placeholder="공장명 입력 (예: 풀무원)"
+            placeholder="제조사명 입력 (예: 오뚜기)"
             class="w-full bg-transparent text-lg font-semibold focus:outline-none placeholder:text-gray-300"
             @keyup.enter="handleSearch"
         />
