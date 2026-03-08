@@ -219,15 +219,19 @@ const closeReportModal = () => {
 const saveToDashboard = (item, reportResponse) => {
   if (process.server) return
   const saved = JSON.parse(localStorage.getItem('dashboardItems') || '[]')
+
   const newEntry = {
     reportNo: item.PRDLST_REPORT_NO,
     productName: item.PRDLST_NM,
     factoryName: item.BSSH_NM,
     priceHistory: reportResponse.priceHistory,
+    summary: reportResponse.summary, // 💡 새로 추가된 부분 (AI 리포트 내용 저장)
     savedAt: new Date().toISOString()
   }
+
   const filtered = saved.filter(x => x.reportNo !== newEntry.reportNo)
   filtered.unshift(newEntry)
+
   localStorage.setItem('dashboardItems', JSON.stringify(filtered.slice(0, 20)))
 }
 
