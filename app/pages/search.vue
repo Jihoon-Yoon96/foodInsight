@@ -43,7 +43,7 @@
         <div class="mb-8 flex justify-between items-center">
           <div>
             <h2 class="text-2xl font-bold text-gray-900 leading-none">
-              '<span class="text-emerald-600">{{ searchQuery }}</span>' <span class="text-gray-400 font-light">탐색 결과</span>
+              '<span class="text-emerald-600">{{ searchQuery }}</span>' <span class="text-gray-400 font-light text-lg">탐색 결과 ({{ totalItems }}건)</span>
             </h2>
           </div>
           <div class="flex bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
@@ -57,32 +57,72 @@
           <p class="text-emerald-600 font-bold">전국 식품 제조 데이터를 분석하고 있습니다...</p>
         </div>
 
-        <div v-else-if="items && items.length > 0" class="grid grid-cols-1 gap-6">
-          <div v-for="(item, index) in items" :key="index" class="bg-white rounded-3xl border border-gray-100 p-8 flex justify-between items-center hover:border-emerald-200 hover:shadow-lg transition-all shadow-sm group">
-            <div class="flex gap-8 items-center">
-              <div class="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-7h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
+        <div v-else-if="items && items.length > 0">
+          <div class="grid grid-cols-1 gap-6">
+            <div v-for="(item, index) in items" :key="index" class="bg-white rounded-3xl border border-gray-100 p-8 flex justify-between items-center hover:border-emerald-200 hover:shadow-lg transition-all shadow-sm group">
+              <div class="flex gap-8 items-center">
+                <div class="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-7h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-md uppercase">C002 DATA</span>
+                    <span class="text-xs font-bold text-emerald-600">{{ item.BSSH_NM }}</span> </div>
+                  <h3 class="text-2xl font-black text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">
+                    {{ item.PRDLST_NM }} </h3>
+                  <p class="text-[15px] text-gray-500 mb-2 line-clamp-1">
+                    <span class="font-bold text-gray-400">원재료:</span> {{ item.RAWMATERIAL_NM }}
+                  </p>
+                  <p class="text-xs text-gray-400 font-medium italic">신고번호: {{ item.PRDLST_REPORT_NO }}</p>
+                </div>
               </div>
-              <div>
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-md uppercase">C002 DATA</span>
-                  <span class="text-xs font-bold text-emerald-600">{{ item.BSSH_NM }}</span> </div>
-                <h3 class="text-2xl font-black text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">
-                  {{ item.PRDLST_NM }} </h3>
-                <p class="text-[15px] text-gray-500 mb-2 line-clamp-1">
-                  <span class="font-bold text-gray-400">원재료:</span> {{ item.RAWMATERIAL_NM }}
-                </p>
-                <p class="text-xs text-gray-400 font-medium italic">신고번호: {{ item.PRDLST_REPORT_NO }}</p>
+
+              <div class="text-right border-l pl-8 border-gray-100">
+                <p class="text-[10px] font-black text-gray-300 mb-1 uppercase tracking-widest">매칭 지수</p>
+                <p class="text-3xl font-black text-emerald-600">98%</p>
+                <button class="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md">리포트</button>
               </div>
+            </div>
+          </div>
+
+          <div class="mt-12 flex justify-center items-center gap-2">
+            <button
+                @click="changePage(currentPage - 1)"
+                :disabled="currentPage === 1"
+                class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-600 disabled:opacity-30 disabled:hover:text-gray-400 disabled:hover:border-gray-200 transition-all"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+            </button>
+
+            <div class="flex items-center gap-1 px-4 py-2 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-bold cursor-pointer hover:border-emerald-300 transition-colors" @click="isEditingPage = true">
+              <template v-if="!isEditingPage">
+                <span class="text-emerald-600">{{ currentPage }}</span>
+                <span class="text-gray-300">/</span>
+                <span class="text-gray-500">{{ Math.max(1, Math.ceil(totalItems / 10)) }}</span>
+              </template>
+              <template v-else>
+                <input
+                    v-model="inputPage"
+                    type="number"
+                    class="w-12 text-center border-none focus:ring-0 text-emerald-600 bg-transparent p-0"
+                    :max="Math.ceil(totalItems / 10)"
+                    min="1"
+                    @keyup.enter="goToInputPage"
+                    @blur="isEditingPage = false"
+                    ref="pageInput"
+                />
+              </template>
             </div>
 
-            <div class="text-right border-l pl-8 border-gray-100">
-              <p class="text-[10px] font-black text-gray-300 mb-1 uppercase tracking-widest">매칭 지수</p>
-              <p class="text-3xl font-black text-emerald-600">98%</p>
-              <button class="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md">리포트</button>
-            </div>
+            <button
+                @click="changePage(currentPage + 1)"
+                :disabled="currentPage >= Math.ceil(totalItems / 10)"
+                class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-600 disabled:opacity-30 disabled:hover:text-gray-400 disabled:hover:border-gray-200 transition-all"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </button>
           </div>
         </div>
 
@@ -99,10 +139,33 @@
 const route = useRoute()
 const router = useRouter()
 
-// 1. 검색어 및 데이터 상태 관리
+// 1. 상태 관리
 const searchQuery = ref(route.query.raw || route.query.prod || route.query.fact || '')
 const items = ref([])
+const totalItems = ref(0)
+const currentPage = ref(Number(route.query.page) || 1)
 const pending = ref(false)
+
+const isEditingPage = ref(false)
+const inputPage = ref(currentPage.value)
+const pageInput = ref(null)
+
+// 입력한 페이지로 이동하는 함수
+const goToInputPage = () => {
+  const targetPage = Math.min(Math.max(1, inputPage.value), Math.ceil(totalItems.value / 10))
+  isEditingPage.value = false
+  changePage(targetPage)
+}
+
+// 입력창이 뜰 때 자동으로 포커스 주기
+watch(isEditingPage, (newVal) => {
+  if (newVal) {
+    inputPage.value = currentPage.value
+    nextTick(() => {
+      pageInput.value?.focus()
+    })
+  }
+})
 
 // 2. 데이터 페칭 로직
 const fetchFoodData = async () => {
@@ -110,13 +173,18 @@ const fetchFoodData = async () => {
 
   pending.value = true
   try {
-    // 내부 서버 API 호출
     const response = await $fetch('/api/food', {
-      query: { raw: searchQuery.value }
+      query: {
+        raw: searchQuery.value,
+        page: currentPage.value // 페이지 번호 전달
+      }
     })
 
-    // 서버 응답 구조(items)에 따라 데이터 할당
     items.value = response?.items || []
+    totalItems.value = response?.total || 0
+
+    // 페이지 이동 시 상단으로 스크롤
+    if (process.client) window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
     console.error("데이터 로드 에러:", error)
     items.value = []
@@ -125,22 +193,29 @@ const fetchFoodData = async () => {
   }
 }
 
-// 3. 검색 이벤트 핸들러
-const refreshData = () => {
-  if (!searchQuery.value) return
-  router.push({ query: { raw: searchQuery.value } })
+// 3. 핸들러 함수
+const changePage = (newPage) => {
+  currentPage.value = newPage
+  router.push({ query: { ...route.query, page: newPage } })
   fetchFoodData()
 }
 
-// 초기 로드 시 실행
+const refreshData = () => {
+  if (!searchQuery.value) return
+  currentPage.value = 1
+  router.push({ query: { raw: searchQuery.value, page: 1 } })
+  fetchFoodData()
+}
+
+// 4. 생명주기 및 감시
 onMounted(() => {
   fetchFoodData()
 })
 
-// URL 쿼리 변경 감시 (메인에서 검색하여 넘어올 때 대응)
 watch(() => route.query.raw, (newVal) => {
-  if (newVal) {
+  if (newVal !== searchQuery.value) {
     searchQuery.value = newVal
+    currentPage.value = 1
     fetchFoodData()
   }
 })
