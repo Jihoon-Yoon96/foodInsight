@@ -1,22 +1,39 @@
 <template>
   <div class="min-h-screen bg-[#F9FAFB]">
     <header class="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm">
-      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <NuxtLink to="/" class="text-2xl font-black text-emerald-600 tracking-tighter shrink-0">FoodInsight</NuxtLink>
-        <div class="flex-1 max-w-3xl mx-8">
-          <div class="flex items-stretch w-full bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500 transition-all shadow-inner h-12">
-            <input v-model="searchForm.productName" type="text" class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold border-r border-gray-200 placeholder:text-gray-400" placeholder="품목명 (예: 핫도그)" @keyup.enter="refreshData" />
-            <input v-model="searchForm.factoryName" type="text" class="flex-1 bg-transparent py-2 px-4 outline-none text-sm font-semibold placeholder:text-gray-400" placeholder="제조사명 (예: 풀무원)" @keyup.enter="refreshData" />
-            <button @click="refreshData" class="px-5 bg-white border-l border-gray-200 text-gray-400 hover:text-emerald-600 transition-colors flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:h-20 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
+        <NuxtLink to="/" class="text-2xl font-black text-emerald-600 tracking-tighter shrink-0 w-full sm:w-auto text-center sm:text-left">
+          FoodInsight
+        </NuxtLink>
+        <div class="flex-1 w-full sm:max-w-3xl sm:mx-8">
+          <div class="flex flex-col sm:flex-row items-stretch w-full bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500 transition-all shadow-inner sm:h-12">
+            <input
+                v-model="searchForm.productName"
+                type="text"
+                class="flex-1 min-w-0 bg-transparent py-3 sm:py-2 px-4 outline-none text-sm font-semibold border-b sm:border-b-0 sm:border-r border-gray-200 placeholder:text-gray-400 placeholder:font-normal"
+                placeholder="품목명 (예: 핫도그)"
+                @keyup.enter="refreshData"
+            />
+            <input
+                v-model="searchForm.factoryName"
+                type="text"
+                class="flex-1 min-w-0 bg-transparent py-3 sm:py-2 px-4 outline-none text-sm font-semibold placeholder:text-gray-400 placeholder:font-normal"
+                placeholder="제조사명 (예: 풀무원)"
+                @keyup.enter="refreshData"
+            />
+            <button @click="refreshData" class="py-3 sm:py-0 px-5 bg-white border-t sm:border-t-0 sm:border-l border-gray-200 text-gray-400 hover:text-emerald-600 transition-colors flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </button>
           </div>
         </div>
       </div>
     </header>
 
-    <div class="max-w-7xl mx-auto py-10 px-6 flex gap-10">
-      <aside class="w-64 shrink-0 hidden lg:block">
+    <div class="max-w-7xl mx-auto py-6 sm:py-10 px-4 sm:px-6 flex flex-col lg:flex-row gap-6 sm:gap-10">
+
+      <aside class="w-full lg:w-64 shrink-0 hidden lg:block">
         <div class="sticky top-32">
           <h3 class="text-sm font-bold text-gray-400 mb-4 tracking-widest uppercase flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -39,63 +56,67 @@
         </div>
       </aside>
 
-      <main class="flex-1">
-        <div class="mb-8 flex justify-between items-center">
+      <main class="flex-1 min-w-0">
+        <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
           <div>
-            <h2 class="text-2xl font-bold text-gray-900 leading-none">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
               '<span class="text-emerald-600">{{ currentSearchLabel }}</span>' 탐색 결과
-              <span v-if="totalItems > 0" class="text-gray-400 font-light text-lg">({{ totalItems }}건)</span>
+              <span v-if="totalItems > 0" class="text-gray-400 font-light text-base sm:text-lg block sm:inline mt-1 sm:mt-0">({{ totalItems }}건)</span>
             </h2>
           </div>
 
-          <div class="flex bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
-            <button @click="changeSort('recent')" :class="sortOrder === 'recent' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'" class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all">최신순</button>
-            <button @click="changeSort('name')" :class="sortOrder === 'name' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'" class="px-4 py-1.5 text-xs font-medium rounded-lg transition-all">품목명순</button>
+          <div class="flex w-full sm:w-auto bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+            <button @click="changeSort('recent')" :class="sortOrder === 'recent' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'" class="flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all">최신순</button>
+            <button @click="changeSort('name')" :class="sortOrder === 'name' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'" class="flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-medium rounded-lg transition-all">품목명순</button>
           </div>
         </div>
 
-        <div v-if="pending" class="flex flex-col items-center justify-center py-40">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mb-4"></div>
-          <p class="text-emerald-600 font-bold">전국 식품 제조 데이터를 분석하고 있습니다...</p>
+        <div v-if="pending" class="flex flex-col items-center justify-center py-32 sm:py-40">
+          <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-emerald-600 mb-4"></div>
+          <p class="text-emerald-600 font-bold text-sm sm:text-base text-center">전국 식품 제조 데이터를 분석하고 있습니다...</p>
         </div>
 
         <div v-else-if="items && items.length > 0">
-          <div class="grid grid-cols-1 gap-6">
-            <div v-for="(item, index) in items" :key="index" class="bg-white rounded-3xl border border-gray-100 p-8 flex justify-between items-center hover:border-emerald-200 hover:shadow-lg transition-all shadow-sm group">
-              <div class="flex gap-8 items-center">
-                <div class="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-7h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+          <div class="grid grid-cols-1 gap-4 sm:gap-6">
+            <div v-for="(item, index) in items" :key="index" class="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center hover:border-emerald-200 hover:shadow-lg transition-all shadow-sm group gap-4 sm:gap-0">
+
+              <div class="flex gap-4 sm:gap-8 items-start sm:items-center w-full">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-50 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-300 group-hover:scale-105 sm:group-hover:scale-110 transition-transform shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-7h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                 </div>
-                <div>
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="text-xs font-bold text-emerald-600">{{ item.BSSH_NM }}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 sm:mb-2">
+                    <span class="text-[11px] sm:text-xs font-bold text-emerald-600 truncate">{{ item.BSSH_NM }}</span>
                   </div>
-                  <h3 class="text-2xl font-black text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">
+                  <h3 class="text-lg sm:text-2xl font-black text-gray-900 mb-1 sm:mb-2 group-hover:text-emerald-700 transition-colors truncate">
                     {{ item.PRDLST_NM }}
                   </h3>
-                  <p class="text-[15px] text-gray-500 mb-2 line-clamp-1">
+                  <p class="text-xs sm:text-[15px] text-gray-500 mb-1 sm:mb-2 line-clamp-1">
                     <span class="font-bold text-gray-400">원재료:</span> {{ item.RAWMTRL_NM }}
                   </p>
-                  <p class="text-xs text-gray-400 font-medium italic">
+                  <p class="text-[10px] sm:text-xs text-gray-400 font-medium italic break-all">
                     신고번호: {{ item.PRDLST_REPORT_NO }}
                   </p>
                 </div>
               </div>
 
-              <div class="text-right border-l pl-8 border-gray-100 shrink-0">
-                <p class="text-[10px] font-black text-gray-400 mb-1 uppercase tracking-widest">보고일자</p>
-                <p class="text-2xl font-black text-emerald-600 tracking-tight">{{ formatDate(item.PRMS_DT) }}</p>
+              <div class="text-left sm:text-right border-t sm:border-t-0 sm:border-l border-gray-100 w-full sm:w-auto pt-4 sm:pt-0 sm:pl-8 shrink-0 flex flex-row sm:flex-col justify-between items-center sm:items-end mt-2 sm:mt-0">
+                <div class="mb-0 sm:mb-1">
+                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest hidden sm:block">보고일자</p>
+                  <p class="text-base sm:text-2xl font-black text-emerald-600 tracking-tight">{{ formatDate(item.PRMS_DT) }}</p>
+                </div>
                 <button
                     @click="openReportModal(item)"
-                    class="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md w-full"
+                    class="mt-0 sm:mt-4 px-5 sm:px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors shadow-md w-auto sm:w-full"
                 >
-                  리포트
+                  AI 리포트
                 </button>
               </div>
+
             </div>
           </div>
 
-          <div class="mt-12 flex justify-center items-center gap-2">
+          <div class="mt-8 sm:mt-12 flex justify-center items-center gap-2 flex-wrap">
             <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-600 disabled:opacity-30 transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
             </button>
@@ -115,8 +136,8 @@
           </div>
         </div>
 
-        <div v-else class="text-center py-40 bg-white rounded-3xl border border-dashed border-gray-200">
-          <p class="text-gray-400 font-medium">검색된 식품 제조 정보가 없습니다.</p>
+        <div v-else class="text-center py-32 sm:py-40 bg-white rounded-2xl sm:rounded-3xl border border-dashed border-gray-200">
+          <p class="text-gray-400 font-medium text-sm sm:text-base">검색된 식품 제조 정보가 없습니다.</p>
         </div>
       </main>
     </div>
@@ -132,7 +153,6 @@
 </template>
 
 <script setup>
-// 기존 로직 100% 동일
 const route = useRoute()
 const router = useRouter()
 
@@ -182,7 +202,7 @@ const openReportModal = async (item) => {
     })
 
     reportData.value = response
-    saveToDashboard(item, response) // response 객체 통째로 전달
+    saveToDashboard(item, response)
   } catch (error) {
     console.error("리포트 생성 실패:", error)
   } finally {
@@ -196,27 +216,18 @@ const closeReportModal = () => {
   reportData.value = null
 }
 
-// ✨ 변경된 대시보드 저장 로직
 const saveToDashboard = (item, reportResponse) => {
   if (process.server) return
-
   const saved = JSON.parse(localStorage.getItem('dashboardItems') || '[]')
-
   const newEntry = {
-    reportNo: item.PRDLST_REPORT_NO, // 💡 중복 방지의 고유 키값 (신고번호)
+    reportNo: item.PRDLST_REPORT_NO,
     productName: item.PRDLST_NM,
     factoryName: item.BSSH_NM,
-    priceHistory: reportResponse.priceHistory, // 4년치 가격 배열 저장
+    priceHistory: reportResponse.priceHistory,
     savedAt: new Date().toISOString()
   }
-
-  // 신고번호 기준으로 동일한 제품이 있으면 제거 (최신 기록으로 덮어쓰기 위해)
   const filtered = saved.filter(x => x.reportNo !== newEntry.reportNo)
-
-  // 배열 맨 앞에 새 항목 추가
   filtered.unshift(newEntry)
-
-  // 최대 20개 저장
   localStorage.setItem('dashboardItems', JSON.stringify(filtered.slice(0, 20)))
 }
 
