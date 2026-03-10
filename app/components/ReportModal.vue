@@ -2,7 +2,7 @@
   <div v-if="isOpen" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity p-0 sm:p-4">
     <div class="bg-white w-full max-w-3xl rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden relative flex flex-col max-h-[85vh] sm:max-h-[90vh]">
 
-      <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 flex justify-between items-start bg-blue-50/30">
+      <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 flex justify-between items-start bg-blue-50/30 shrink-0">
         <div class="min-w-0 pr-4">
           <span class="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-sky-100 text-sky-700 text-[10px] sm:text-xs font-black rounded-md uppercase tracking-wide">AI 분석 리포트</span>
           <h2 class="text-xl sm:text-2xl font-black text-gray-900 mt-1 sm:mt-2 truncate">{{ selectedItem?.PRDLST_NM }}</h2>
@@ -19,7 +19,7 @@
         </button>
       </div>
 
-      <div class="p-5 sm:p-8 overflow-y-auto flex-1">
+      <div class="p-5 sm:p-8 overflow-y-auto flex-1 scroll-smooth" ref="modalContentRef">
         <div v-if="isLoading" class="flex flex-col items-center justify-center py-16 sm:py-20">
           <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-4 border-blue-600 mb-4"></div>
           <p class="text-blue-700 font-bold animate-pulse text-sm sm:text-base text-center">AI가 제품 정보를 분석 중입니다...</p>
@@ -32,7 +32,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
                 AI 시장 요약
               </h3>
-              <button @click="toggleInput" class="px-3 py-1.5 bg-white border border-blue-200 text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-1 shadow-sm w-full sm:w-auto">
+              <button v-if="!isInputActive" @click="toggleInput" class="px-3 py-1.5 bg-white border border-blue-200 text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-1 shadow-sm w-full sm:w-auto">
                 추가 분석 요청하기
               </button>
             </div>
@@ -136,7 +136,7 @@
         </div>
       </div>
 
-      <div class="px-5 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-end items-center gap-3">
+      <div class="px-5 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-end items-center gap-3 shrink-0">
 
         <div v-if="isInputActive" class="w-full flex items-center gap-2 bg-white border border-blue-200 rounded-xl px-2 py-1.5 shadow-inner flex-1 relative">
           <input
@@ -168,7 +168,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 
 const props = defineProps({
   isOpen: { type: Boolean, default: false },
@@ -179,24 +179,45 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-// --- 커스텀 AI 프롬프트 상태 ---
+// 콘텐츠 영역 스크롤 제어를 위한 ref
+const modalContentRef = ref(null)
+
 const isInputActive = ref(false)
 const userPrompt = ref('')
 const isCustomLoading = ref(false)
 const customAnalyses = ref([])
 
-const toggleInput = () => {
-  isInputActive.value = !isInputActive.value
-  if (!isInputActive.value) userPrompt.value = ''
+// 💡 2. 스크롤 자동 이동 로직 적용
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (modalContentRef.value) {
+      modalContentRef.value.scrollTo({
+        top: modalContentRef.value.scrollHeight,
+        behavior: 'smooth'
+      })
+    }
+  })
 }
 
-// AI 커스텀 프롬프트 전송
+const toggleInput = () => {
+  isInputActive.value = !isInputActive.value
+  if (!isInputActive.value) {
+    userPrompt.value = ''
+  } else {
+    // 입력창이 켜질 때 콘텐츠 영역 최하단으로 스크롤 이동
+    scrollToBottom()
+  }
+}
+
 const sendCustomPrompt = async () => {
   if (!userPrompt.value.trim() || isCustomLoading.value) return
 
   const promptText = userPrompt.value.trim()
   userPrompt.value = ''
   isCustomLoading.value = true
+
+  // 입력 내용 제출 시 스크롤 아래로 내림
+  scrollToBottom()
 
   try {
     const response = await $fetch('/api/custom-report', {
@@ -211,22 +232,24 @@ const sendCustomPrompt = async () => {
       prompt: promptText,
       response: response.result
     })
+
+    // 분석 완료 후 답변을 보기 위해 다시 한번 스크롤 내림
+    scrollToBottom()
   } catch (error) {
     customAnalyses.value.push({
       prompt: promptText,
       response: '오류가 발생했습니다. 다시 시도해 주세요.'
     })
+    scrollToBottom()
   } finally {
     isCustomLoading.value = false
   }
 }
 
-// 로컬스토리지에 커스텀 분석 내용 업데이트
 const saveCustomAnalysis = () => {
   if (process.server) return
   const saved = JSON.parse(localStorage.getItem('dashboardItems') || '[]')
 
-  // 현재 보고 있는 리포트(신고번호 기준)를 찾아서 데이터 추가
   const targetIndex = saved.findIndex(x => x.reportNo === props.selectedItem.PRDLST_REPORT_NO)
   if (targetIndex !== -1) {
     saved[targetIndex].customAnalyses = customAnalyses.value
@@ -235,7 +258,6 @@ const saveCustomAnalysis = () => {
   }
 }
 
-// 모달이 닫힐 때 상태 초기화
 watch(() => props.isOpen, (newVal) => {
   if (!newVal) {
     isInputActive.value = false
