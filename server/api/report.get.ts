@@ -8,22 +8,30 @@ export default defineEventHandler(async (event) => {
     const prodName = query.prod as string || '알 수 없는 제품';
     const factName = query.fact as string || '알 수 없는 제조사';
 
-    // 1. 쿠팡 검색 링크 (제품명으로만 검색)
     const coupangLink = `https://www.coupang.com/np/search?q=${encodeURIComponent(prodName)}`;
-    const isCoupangAvailable = prodName !== '알 수 없는 제품'; // 임의의 노출 조건
+    const isCoupangAvailable = prodName !== '알 수 없는 제품';
 
     const currentYear = new Date().getFullYear();
+
+    // 💡 다시 추가된 판매량 가설 데이터 생성 로직
+    const randomBase = (prodName.length + factName.length) * 1234;
+    const baseSales = (randomBase % 50000) + 10000;
+    const annualSales = [
+        { year: currentYear - 3, sales: Math.floor(baseSales * 0.7) },
+        { year: currentYear - 2, sales: Math.floor(baseSales * 0.85) },
+        { year: currentYear - 1, sales: Math.floor(baseSales * 1.1) },
+        { year: currentYear, sales: Math.floor(baseSales * 1.3) },
+    ];
+    const totalSales = annualSales.reduce((sum, item) => sum + item.sales, 0);
 
     let summary = '';
     let priceHistory: any[] = [];
 
-    // 2. AI 연동 및 데이터 생성
     try {
         if (!config.geminiApiKey) throw new Error("Gemini API Key가 없습니다.");
 
         const ai = new GoogleGenAI({ apiKey: config.geminiApiKey });
 
-        // 💡 핵심: AI에게 JSON 형태로 답변을 주도록 구조를 강제합니다.
         const prompt = `
         당신은 대한민국 식품 산업 및 B2B 유통/물가 트렌드를 분석하는 시장 분석가입니다.
         데이터:
@@ -53,13 +61,8 @@ export default defineEventHandler(async (event) => {
             contents: prompt,
         });
 
-        // AI 응답 텍스트 가져오기
         const responseText = response.text || '{}';
-
-        // 💡 AI가 혹시나 마크다운(```json ... ```)을 붙여서 응답할 경우를 대비한 정제 작업
         const cleanJsonString = responseText.replace(/```json/gi, '').replace(/```/gi, '').trim();
-
-        // JSON 파싱해서 실제 데이터로 변환
         const aiData = JSON.parse(cleanJsonString);
 
         summary = aiData.summary || '리포트를 생성할 수 없습니다.';
@@ -67,8 +70,6 @@ export default defineEventHandler(async (event) => {
 
     } catch (error) {
         console.error('Gemini AI 분석 및 파싱 실패:', error);
-
-        // API 오류나 JSON 파싱 에러 발생 시 UI가 깨지지 않도록 최소한의 기본값 제공
         summary = `AI 분석 시스템에 일시적으로 연결할 수 없거나 응답 포맷 오류가 발생했습니다. (내부 데이터: [${factName}]의 [${prodName}]은(는) 최근 원재료비 인상에도 불구하고 가격 방어율이 우수한 편입니다.)`;
         priceHistory = [
             { year: currentYear - 3, retail: 5000, wholesale: 3500 },
@@ -83,6 +84,8 @@ export default defineEventHandler(async (event) => {
         factoryName: factName,
         summary,
         priceHistory,
+        annualSales, // 💡 반환값에 판매량 데이터 추가
+        totalSales,
         isCoupangAvailable,
         coupangLink
     };

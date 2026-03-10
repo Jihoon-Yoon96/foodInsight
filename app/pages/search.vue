@@ -225,7 +225,9 @@ const saveToDashboard = (item, reportResponse) => {
     productName: item.PRDLST_NM,
     factoryName: item.BSSH_NM,
     priceHistory: reportResponse.priceHistory,
-    summary: reportResponse.summary, // 💡 새로 추가된 부분 (AI 리포트 내용 저장)
+    annualSales: reportResponse.annualSales, // 💡 판매량 배열 저장
+    totalSales: reportResponse.totalSales,   // 💡 총 판매량 저장
+    summary: reportResponse.summary,
     savedAt: new Date().toISOString()
   }
 
