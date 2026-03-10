@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
 
     } catch (error) {
         console.error('Gemini AI 분석 및 파싱 실패:', error);
-        summary = `AI 분석 시스템에 일시적으로 연결할 수 없거나 응답 포맷 오류가 발생했습니다. (내부 데이터: [${factName}]의 [${prodName}]은(는) 최근 원재료비 인상에도 불구하고 가격 방어율이 우수한 편입니다.)`;
+        summary = `AI 분석 시스템에 일시적으로 연결할 수 없거나 응답 포맷 오류가 발생했습니다.`; //(내부 데이터: [${factName}]의 [${prodName}]은(는) 최근 원재료비 인상에도 불구하고 가격 방어율이 우수한 편입니다.)
         priceHistory = [
             { year: currentYear - 3, retail: 5000, wholesale: 3500 },
             { year: currentYear - 2, retail: 5200, wholesale: 3600 },
