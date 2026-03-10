@@ -3,7 +3,7 @@
     <header class="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:h-20 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
         <NuxtLink to="/" class="text-2xl font-black text-blue-600 tracking-tighter shrink-0 w-full sm:w-auto text-center sm:text-left">
-          D-Insight
+          D-INSIGHT
         </NuxtLink>
         <div class="flex-1 w-full sm:max-w-3xl sm:mx-8">
           <div class="flex flex-col sm:flex-row items-stretch w-full bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all shadow-inner sm:h-12">

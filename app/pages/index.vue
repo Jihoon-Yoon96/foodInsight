@@ -8,7 +8,7 @@
       <h1 class="text-4xl md:text-5xl font-extrabold text-blue-900 leading-tight">
 <!--        쉽고 빠르게 찾는<br />-->
 <!--        <span class="text-[#3873B6]">최적의 영업 파트너</span>-->
-        D-Insight<br />
+        D-INSIGHT<br />
         <span class="text-[#3873B6] text-2xl">쉽고 빠르게 찾는 최적의 영업 파트너</span>
       </h1>
       <p class="mt-4 text-gray-500 text-sm md:text-base">
