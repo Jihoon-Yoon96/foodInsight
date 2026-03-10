@@ -14,5 +14,5 @@ body {
     width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-    @apply bg-emerald-200 rounded-full;
+    @apply bg-blue-200 rounded-full;
 }
