@@ -35,13 +35,13 @@
       <div class="flex-1 overflow-y-auto p-6 sm:p-10 custom-scrollbar relative">
         <div class="max-w-7xl mx-auto">
 
-          <div class="mb-6 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-slate-700/50 rounded-2xl p-5 shadow-sm transition-colors">
+          <div v-if="availableTypes.length > 0" class="mb-6 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-slate-700/50 rounded-2xl p-5 shadow-sm transition-colors">
             <div class="flex items-center justify-between mb-3">
               <h3 class="text-sm font-bold text-gray-900 dark:text-white transition-colors">제품유형 필터</h3>
               <button @click="clearFilters" v-if="selectedTypes.length > 0" class="text-[11px] font-bold text-gray-400 hover:text-blue-500 transition-colors">필터 초기화</button>
             </div>
             <div class="flex flex-wrap gap-2 sm:gap-3">
-              <label v-for="cat in CATEGORY_OPTIONS" :key="cat" class="cursor-pointer flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors">
+              <label v-for="cat in availableTypes" :key="cat" class="cursor-pointer flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors">
                 <input
                     type="checkbox"
                     :value="cat"
@@ -164,7 +164,6 @@ const searchForm = reactive({
   factoryName: route.query.fact || ''
 })
 
-// 💡 다중 필터 관리를 위한 배열 추가
 const initialTypes = route.query.types ? route.query.types.split(',') : []
 const selectedTypes = ref(initialTypes)
 
@@ -182,6 +181,27 @@ const isModalOpen = ref(false)
 const isReportLoading = ref(false)
 const selectedItem = ref(null)
 const reportData = ref(null)
+
+// 💡 1. 실제 검색결과(라우터 쿼리 기준)에 존재하는 제품유형만 동적으로 추출
+const availableTypes = computed(() => {
+  let baseItems = [...DUMMY_FOOD_DATA]
+
+  const prodQuery = route.query.prod || ''
+  const factQuery = route.query.fact || ''
+
+  if (prodQuery) {
+    baseItems = baseItems.filter(item => item.PRDLST_NM.includes(prodQuery))
+  }
+  if (factQuery) {
+    baseItems = baseItems.filter(item => item.BSSH_NM.includes(factQuery))
+  }
+
+  // 중복 제거된 실제 결과 내 카테고리 목록
+  const existingTypes = new Set(baseItems.map(item => item.PRDLST_DCNM).filter(Boolean))
+
+  // 기존 상수 배열(CATEGORY_OPTIONS)의 정렬 순서를 유지하며 필터링
+  return CATEGORY_OPTIONS.filter(cat => existingTypes.has(cat))
+})
 
 const createSearchLabel = (form) => {
   const parts = []
@@ -202,7 +222,6 @@ const clearFilters = () => {
   refreshData()
 }
 
-// 💡 필터 처리 로직 고도화
 const applyDummyDataFallback = () => {
   let dummyItems = [...DUMMY_FOOD_DATA];
 
@@ -272,6 +291,27 @@ const saveToDashboard = (item, reportResponse) => {
   filtered.unshift(newEntry)
 
   localStorage.setItem('dashboardItems', JSON.stringify(filtered.slice(0, 20)))
+}
+
+const saveRecentSearch = (form) => {
+  if (!form.productName && !form.factoryName && selectedTypes.value.length === 0) return
+  if (process.server) return
+  const label = createSearchLabel(form)
+  const newEntry = {
+    label,
+    query: {
+      types: selectedTypes.value.join(','),
+      prod: form.productName,
+      fact: form.factoryName
+    }
+  }
+
+  let searches = JSON.parse(localStorage.getItem('recentSearches') || '[]')
+  searches = searches.filter(t => t.label !== label)
+  searches.unshift(newEntry)
+  if (searches.length > 10) searches = searches.slice(0, 10)
+
+  localStorage.setItem('recentSearches', JSON.stringify(searches))
 }
 
 const fetchFoodData = async () => {
