@@ -55,34 +55,29 @@
     </div>
 
     <div class="mt-16 w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div class="bg-white dark:bg-[#1E293B] p-6 md:p-8 rounded-3xl shadow-sm border border-blue-50 dark:border-slate-700/50 flex flex-col hover:border-blue-200 dark:hover:border-slate-500/50 hover:shadow-md transition-all duration-300 h-[420px]">
-        <div class="flex items-center gap-4 mb-6">
-          <div class="p-3 bg-blue-50 dark:bg-slate-800 rounded-xl transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          </div>
-          <h4 class="font-bold text-xl text-gray-800 dark:text-white tracking-tight transition-colors">최근 검색어</h4>
-        </div>
 
-        <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-          <ul v-if="recentSearches.length > 0" class="space-y-3">
-            <li v-for="(item, index) in recentSearches.slice(0, 5)" :key="index">
-              <button
-                  @click="clickRecentSearch(item)"
-                  class="w-full text-left bg-gray-50 dark:bg-[#0F172A] hover:bg-blue-50 dark:hover:bg-slate-800 border border-gray-100 dark:border-slate-700/50 hover:border-blue-200 dark:hover:border-slate-600 px-4 py-3 rounded-xl transition-all group flex items-center justify-between"
-              >
-                <span class="text-[15px] font-medium text-gray-600 dark:text-slate-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 truncate pr-4 transition-colors">
-                  {{ item.label }}
-                </span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300 dark:text-slate-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 shrink-0 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-              </button>
-            </li>
-          </ul>
-          <div v-else class="h-full flex flex-col items-center justify-center text-center pb-6">
-            <div class="w-16 h-16 bg-gray-50 dark:bg-[#0F172A] rounded-full flex items-center justify-center mb-3 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            </div>
-            <p class="text-sm font-medium text-gray-400 dark:text-slate-500 transition-colors">최근 검색한 정보가 없습니다.</p>
+      <div class="relative overflow-hidden rounded-3xl shadow-sm border border-blue-50 dark:border-slate-700/50 flex flex-col justify-center items-center text-center transition-all duration-300 h-[420px] bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-slate-800 dark:to-[#0F172A] group hover:shadow-lg">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-30"></div>
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-white opacity-10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-blue-400 opacity-20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+
+        <div class="relative z-10 p-8 flex flex-col items-center w-full">
+          <div class="w-20 h-20 bg-white/20 dark:bg-slate-700/50 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-white/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+            </svg>
           </div>
+          <h3 class="text-3xl font-black text-white mb-3 tracking-tight">경쟁사 분석</h3>
+          <p class="text-blue-100 dark:text-slate-300 font-medium mb-8 leading-relaxed text-sm sm:text-base">
+            AI가 분석한 제품유형별 시장 동향과<br />경쟁업체 데이터를 한눈에 확인하세요.
+          </p>
+
+          <NuxtLink to="/dashboard" class="inline-flex items-center justify-center gap-2 bg-white text-blue-700 font-bold px-8 py-3.5 rounded-xl shadow-lg hover:bg-blue-50 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 hover:scale-105 transition-all duration-300 w-full sm:w-auto">
+            대시보드로 이동
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </NuxtLink>
         </div>
       </div>
 
@@ -92,7 +87,7 @@
             <div class="p-3 bg-blue-600 rounded-xl">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
             </div>
-            <h4 class="font-bold text-xl text-gray-800 dark:text-white tracking-tight transition-colors">대시보드</h4>
+            <h4 class="font-bold text-xl text-gray-800 dark:text-white tracking-tight transition-colors">저장된 리포트</h4>
           </div>
 
           <div class="flex bg-gray-50 dark:bg-[#0F172A] border border-gray-100 dark:border-slate-700/50 rounded-lg p-1 transition-colors">
@@ -119,7 +114,7 @@
             <div class="w-16 h-16 bg-gray-50 dark:bg-[#0F172A] rounded-full flex items-center justify-center mb-3 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
             </div>
-            <p class="text-sm font-medium text-gray-400 dark:text-slate-500 transition-colors">AI가 분석한 정보가 없습니다.</p>
+            <p class="text-sm font-medium text-gray-400 dark:text-slate-500 transition-colors">AI가 분석한 리포트 정보가 없습니다.</p>
           </div>
         </div>
       </div>
@@ -142,49 +137,34 @@ import { CATEGORY_OPTIONS } from '~/utils/constants'
 const router = useRouter()
 
 const searchForm = reactive({
-  type: '가공유', // 💡 기본 타입 지정
+  type: '가공유',
   productName: '',
   factoryName: ''
 })
 
-const recentSearches = ref([])
 const dashboardItems = ref([])
-const dashboardSortOrder = ref('recent') // recent, wholesale, retail
+const dashboardSortOrder = ref('recent')
 
 const isModalOpen = ref(false)
 const selectedDashboardItem = ref(null)
 
 onMounted(() => {
   if (process.client) {
-    recentSearches.value = JSON.parse(localStorage.getItem('recentSearches') || '[]')
     dashboardItems.value = JSON.parse(localStorage.getItem('dashboardItems') || '[]')
   }
 })
 
 const handleSearch = () => {
   if (!searchForm.type && !searchForm.productName && !searchForm.factoryName) {
-    alert('검색어를 입력해 주세요.')
+    alert('검색 조건을 확인해 주세요.')
     return
   }
-  // 💡 라우터 파라미터에 type 추가
   router.push({
     path: '/search',
     query: {
       type: searchForm.type || undefined,
       prod: searchForm.productName || undefined,
       fact: searchForm.factoryName || undefined
-    }
-  })
-}
-
-const clickRecentSearch = (item) => {
-  router.push({
-    path: '/search',
-    query: {
-      type: item.query.type || undefined,
-      prod: item.query.prod || undefined,
-      fact: item.query.fact || undefined,
-      page: 1
     }
   })
 }
@@ -196,7 +176,6 @@ const getLatestPrice = (item) => {
 
 const sortedDashboardItems = computed(() => {
   const items = [...dashboardItems.value]
-
   if (dashboardSortOrder.value === 'recent') {
     return items.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))
   } else if (dashboardSortOrder.value === 'wholesale') {
@@ -225,6 +204,7 @@ const closeDashboardModal = () => {
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+/* 라이트모드 기본 스크롤바 */
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #cbd5e1;
   border-radius: 10px;
@@ -233,6 +213,7 @@ const closeDashboardModal = () => {
   background-color: #94a3b8;
 }
 
+/* 다크모드 스크롤바 (.dark 클래스 하위) */
 :deep(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #334155;
 }
