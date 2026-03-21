@@ -41,54 +41,42 @@
 
       <header class="h-20 bg-[#1E293B] border-b border-slate-700/50 flex items-center justify-between px-6 sm:px-10 shrink-0 z-10">
         <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">대시보드</h1>
-
-        <div class="flex items-center gap-4 sm:gap-6">
-          <div class="hidden sm:flex items-center bg-[#0F172A] border border-slate-700/50 rounded-full px-4 py-2 w-64 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            <input type="text" placeholder="저장된 데이터 검색..." class="bg-transparent border-none outline-none text-sm ml-2 w-full text-slate-200 placeholder:text-slate-500">
-          </div>
-          <button class="text-slate-400 hover:text-blue-400 transition-colors relative">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-[#1E293B]"></span>
-          </button>
-          <div class="w-10 h-10 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-lg border border-blue-500/30 cursor-pointer">
-            M
-          </div>
-        </div>
       </header>
 
       <div class="flex-1 overflow-y-auto p-6 sm:p-10 custom-scrollbar relative">
         <div class="max-w-7xl mx-auto space-y-6 sm:space-y-10">
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 flex items-center justify-between group hover:border-blue-500/50 transition-colors cursor-pointer">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6">
+            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 group hover:border-blue-500/50 transition-colors cursor-pointer">
               <div>
                 <p class="text-sm font-bold text-slate-400 mb-1">최근 6개월 신제품</p>
-                <h3 class="text-3xl font-black text-white">124<span class="text-base font-medium text-slate-500 ml-1">건</span></h3>
+                <h3 class="text-3xl font-black text-white mt-1">124<span class="text-base font-medium text-slate-500 ml-1">건</span></h3>
               </div>
-              <div class="w-14 h-14 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-              </div>
+              <p class="text-xs font-medium text-emerald-400 mt-4 truncate">15% 상승</p>
             </div>
 
-            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 flex items-center justify-between group hover:border-blue-500/50 transition-colors cursor-pointer">
+            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 group hover:border-blue-500/50 transition-colors cursor-pointer">
               <div>
-                <p class="text-sm font-bold text-slate-400 mb-1">이번 달 분석 횟수</p>
-                <h3 class="text-3xl font-black text-white">42<span class="text-base font-medium text-slate-500 ml-1">회</span></h3>
+                <p class="text-sm font-bold text-slate-400 mb-1">집중 카테고리</p>
+                <h3 class="text-3xl font-black text-white mt-1">Frozen Dessert</h3>
               </div>
-              <div class="w-14 h-14 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-              </div>
+              <p class="text-sm font-medium text-blue-400 mt-4 truncate">통산수준 유지</p>
             </div>
 
-            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 flex items-center justify-between group hover:border-blue-500/50 transition-colors cursor-pointer">
+            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 group hover:border-blue-500/50 transition-colors cursor-pointer">
               <div>
-                <p class="text-sm font-bold text-slate-400 mb-1">자주 찾는 카테고리</p>
-                <h3 class="text-xl sm:text-2xl font-black text-purple-400 truncate max-w-[120px]">가공유</h3>
+                <p class="text-sm font-bold text-slate-400 mb-1">평균 리드타임</p>
+                <h3 class="text-3xl font-black text-white mt-1">2.5<span class="text-base font-medium text-slate-500 ml-1">개월</span></h3>
               </div>
-              <div class="w-14 h-14 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+              <p class="text-xs font-medium text-slate-400 mt-4 truncate">통상수준 유지</p>
+            </div>
+
+            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 group hover:border-blue-500/50 transition-colors cursor-pointer">
+              <div>
+                <p class="text-sm font-bold text-slate-400 mb-1">경계 수준</p>
+                <h3 class="text-3xl font-black text-white mt-1">2.5<span class="text-base font-medium text-slate-500 ml-1">개월</span></h3>
               </div>
+              <p class="text-xs font-medium text-emerald-400 mt-4 truncate">저장된 데이터 기반 최근 6개월 추이</p>
             </div>
           </div>
 
