@@ -1,41 +1,8 @@
 <template>
   <div class="flex h-screen bg-[#0F172A] font-sans text-slate-200">
 
-    <aside class="w-64 bg-[#1E293B] border-r border-slate-700/50 flex flex-col hidden md:flex shrink-0 z-20">
-      <div class="h-20 flex items-center px-8 border-b border-slate-700/50">
-        <NuxtLink to="/" class="text-2xl font-black text-blue-500 tracking-tighter">
-          D-INSIGHT
-        </NuxtLink>
-      </div>
-
-      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scrollbar">
-        <p class="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Menu</p>
-
-        <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-600/20 text-blue-400 rounded-xl font-bold transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-          대시보드
-        </a>
-        <NuxtLink to="/search" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-slate-200 rounded-xl font-medium transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-          데이터 탐색
-        </NuxtLink>
-        <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-slate-200 rounded-xl font-medium transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-          트렌드 분석
-        </a>
-        <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-slate-200 rounded-xl font-medium transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
-          저장된 리포트
-        </a>
-      </nav>
-
-      <div class="p-4 border-t border-slate-700/50">
-        <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-slate-200 rounded-xl font-medium transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-          설정
-        </a>
-      </div>
-    </aside>
+    <!-- 사이드바  -->
+    <TheSidebar />
 
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
@@ -47,36 +14,30 @@
         <div class="max-w-7xl mx-auto space-y-6 sm:space-y-10">
 
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6">
-            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 group hover:border-blue-500/50 transition-colors cursor-pointer">
+            <div
+                v-for="(stat, idx) in stats" :key="idx"
+                class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 group transition-colors cursor-pointer"
+                :class="getHoverBorderClass(stat.status)"
+            >
               <div>
-                <p class="text-sm font-bold text-slate-400 mb-1">최근 6개월 신제품</p>
-                <h3 class="text-3xl font-black text-white mt-1">124<span class="text-base font-medium text-slate-500 ml-1">건</span></h3>
-              </div>
-              <p class="text-xs font-medium text-emerald-400 mt-4 truncate">15% 상승</p>
-            </div>
+                <p class="text-sm font-bold text-slate-400 mb-1">{{ stat.label }}</p>
 
-            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 group hover:border-blue-500/50 transition-colors cursor-pointer">
-              <div>
-                <p class="text-sm font-bold text-slate-400 mb-1">집중 카테고리</p>
-                <h3 class="text-3xl font-black text-white mt-1">Frozen Dessert</h3>
-              </div>
-              <p class="text-sm font-medium text-blue-400 mt-4 truncate">통산수준 유지</p>
-            </div>
+                <div v-if="stat.status === 'warn'" class="flex items-center gap-3 mt-1">
+                  <span class="w-4 h-4 rounded-full bg-[#C34A4A] shadow-[0_0_10px_rgba(195,74,74,0.5)]"></span>
+                  <h3 class="text-3xl font-black text-white tracking-tight">{{ stat.value }}</h3>
+                </div>
 
-            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 group hover:border-blue-500/50 transition-colors cursor-pointer">
-              <div>
-                <p class="text-sm font-bold text-slate-400 mb-1">평균 리드타임</p>
-                <h3 class="text-3xl font-black text-white mt-1">2.5<span class="text-base font-medium text-slate-500 ml-1">개월</span></h3>
+                <h3 v-else class="text-3xl font-black text-white mt-1">
+                  {{ stat.value }}<span v-if="stat.unit" class="text-base font-medium text-slate-500 ml-1">{{ stat.unit }}</span>
+                </h3>
               </div>
-              <p class="text-xs font-medium text-slate-400 mt-4 truncate">통상수준 유지</p>
-            </div>
 
-            <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 group hover:border-blue-500/50 transition-colors cursor-pointer">
-              <div>
-                <p class="text-sm font-bold text-slate-400 mb-1">경계 수준</p>
-                <h3 class="text-3xl font-black text-white mt-1">2.5<span class="text-base font-medium text-slate-500 ml-1">개월</span></h3>
-              </div>
-              <p class="text-xs font-medium text-emerald-400 mt-4 truncate">저장된 데이터 기반 최근 6개월 추이</p>
+              <p
+                  class="text-sm font-bold mt-4 truncate"
+                  :class="getStatusClass(stat.status)"
+              >
+                {{ stat.trend }}
+              </p>
             </div>
           </div>
 
@@ -207,6 +168,34 @@
 
 <script setup>
 // 순수 퍼블리싱 UI (데이터 연동 없이 UI만 구성)
+const stats = ref([
+  { label: '최근 6개월 신제품', value: '124', unit: '건', trend: '15% 상승', status: 'info' },
+  { label: '집중 카테고리', value: 'Frozen Dessert', unit: '', trend: '통산수준 유지', status: 'recommend' },
+  { label: '평균 리드타임', value: '2.5', unit: '개월', trend: '통상수준 유지', status: 'normal' },
+  { label: '경계 수준', value: 'High', unit: '', trend: '공격적 확장세', status: 'warn' }
+])
+
+// 상태에 따른 텍스트 색상 매핑 함수
+const getStatusClass = (status) => {
+  const map = {
+    normal: 'text-slate-400',
+    info: 'text-emerald-400',
+    recommend: 'text-blue-400',
+    warn: 'text-[#E67E7E]' // 이미지에 사용된 붉은색
+  }
+  return map[status] || 'text-slate-400'
+}
+
+// 상태에 따른 보더 호버 색상 매핑 (선택 사항)
+const getHoverBorderClass = (status) => {
+  const map = {
+    normal: 'hover:border-slate-500/50',
+    info: 'hover:border-emerald-500/50',
+    recommend: 'hover:border-blue-500/50',
+    warn: 'hover:border-red-500/50'
+  }
+  return map[status]
+}
 </script>
 
 <style scoped>
