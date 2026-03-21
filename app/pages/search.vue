@@ -7,6 +7,27 @@
         </NuxtLink>
         <div class="flex-1 w-full sm:max-w-3xl sm:mx-8">
           <div class="flex flex-col sm:flex-row items-stretch w-full bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all shadow-inner sm:h-12">
+
+            <option value="유제품">유제품</option>
+            <select
+                v-model="searchForm.type"
+                class="bg-transparent py-3 sm:py-2 px-3 outline-none text-sm font-semibold border-b sm:border-b-0 sm:border-r border-gray-200 text-gray-700 cursor-pointer w-full sm:w-36 shrink-0"
+                @change="refreshData"
+            >
+              <option value="축산품">축산품</option>
+              <option value="가공유">가공유</option>
+              <option value="유산균음료">유산균음료</option>
+              <option value="치즈">치즈</option>
+              <option value="유크림">유크림</option>
+              <option value="아이스크림믹스">아이스크림믹스</option>
+              <option value="커피">커피</option>
+<!--              <option value="음료베이스">음료베이스</option>-->
+              <option value="혼합음료">혼합음료</option>
+<!--              <option value="과.채주스">과.채주스</option>-->
+              <option value="당류가공품">당류가공품</option>
+              <option value="기타가공품">기타가공품</option>
+            </select>
+
             <input
                 v-model="searchForm.productName"
                 type="text"
@@ -32,7 +53,6 @@
     </header>
 
     <div class="max-w-7xl mx-auto py-6 sm:py-10 px-4 sm:px-6 flex flex-col lg:flex-row gap-6 sm:gap-10">
-
       <aside class="w-full lg:w-64 shrink-0 hidden lg:block">
         <div class="sticky top-32">
           <h3 class="text-sm font-bold text-gray-400 mb-4 tracking-widest uppercase flex items-center gap-2">
@@ -87,6 +107,7 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2 mb-1 sm:mb-2">
                     <span class="text-[11px] sm:text-xs font-bold text-blue-600 truncate">{{ item.BSSH_NM }}</span>
+                    <span v-if="item.PRDLST_DCNM" class="px-1.5 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold rounded">{{ item.PRDLST_DCNM }}</span>
                   </div>
                   <h3 class="text-lg sm:text-2xl font-black text-gray-900 mb-1 sm:mb-2 group-hover:text-blue-700 transition-colors truncate">
                     {{ item.PRDLST_NM }}
@@ -153,10 +174,13 @@
 </template>
 
 <script setup>
+import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
 const route = useRoute()
 const router = useRouter()
 
 const searchForm = reactive({
+  // 💡 검색어가 없을 경우 기본값을 '유제품'로 강제 고정
+  type: route.query.type || '유제품',
   productName: route.query.prod || '',
   factoryName: route.query.fact || ''
 })
@@ -179,6 +203,7 @@ const reportData = ref(null)
 
 const createSearchLabel = (form) => {
   const parts = []
+  if (form.type) parts.push(`유형: ${form.type}`)
   if (form.productName) parts.push(`품목: ${form.productName}`)
   if (form.factoryName) parts.push(`제조사: ${form.factoryName}`)
   return parts.join(' + ') || '전체'
@@ -200,7 +225,6 @@ const openReportModal = async (item) => {
     const response = await $fetch('/api/report', {
       query: { prod: item.PRDLST_NM, fact: item.BSSH_NM }
     })
-
     reportData.value = response
     saveToDashboard(item, response)
   } catch (error) {
@@ -225,8 +249,8 @@ const saveToDashboard = (item, reportResponse) => {
     productName: item.PRDLST_NM,
     factoryName: item.BSSH_NM,
     priceHistory: reportResponse.priceHistory,
-    annualSales: reportResponse.annualSales, // 💡 판매량 배열 저장
-    totalSales: reportResponse.totalSales,   // 💡 총 판매량 저장
+    annualSales: reportResponse.annualSales,
+    totalSales: reportResponse.totalSales,
     summary: reportResponse.summary,
     savedAt: new Date().toISOString()
   }
@@ -245,10 +269,10 @@ const loadRecentSearches = () => {
 }
 
 const saveRecentSearch = (form) => {
-  if (!form.productName && !form.factoryName) return
+  if (!form.type && !form.productName && !form.factoryName) return
   if (process.server) return
   const label = createSearchLabel(form)
-  const newEntry = { label, query: { prod: form.productName, fact: form.factoryName } }
+  const newEntry = { label, query: { type: form.type, prod: form.productName, fact: form.factoryName } }
   let searches = [...recentSearches.value]
   searches = searches.filter(t => t.label !== label)
   searches.unshift(newEntry)
@@ -268,17 +292,19 @@ const clearRecentSearches = () => {
 }
 
 const clickRecentSearch = (item) => {
+  searchForm.type = item.query.type || '유제품'
   searchForm.productName = item.query.prod || ''
   searchForm.factoryName = item.query.fact || ''
   refreshData()
 }
 
 const fetchFoodData = async () => {
-  if (!searchForm.productName && !searchForm.factoryName) return
+  if (!searchForm.type && !searchForm.productName && !searchForm.factoryName) return
   pending.value = true
   try {
     const response = await $fetch('/api/food', {
       query: {
+        type: searchForm.type || undefined,
         prod: searchForm.productName || undefined,
         fact: searchForm.factoryName || undefined,
         page: currentPage.value,
@@ -300,13 +326,13 @@ const changeSort = (sort) => {
   if (sortOrder.value === sort) return
   sortOrder.value = sort
   currentPage.value = 1
-  router.push({ query: { prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: 1 } })
+  router.push({ query: { type: searchForm.type || undefined, prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: 1 } })
   fetchFoodData()
 }
 
 const changePage = (newPage) => {
   currentPage.value = newPage
-  router.push({ query: { prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: newPage } })
+  router.push({ query: { type: searchForm.type || undefined, prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: newPage } })
   fetchFoodData()
 }
 
@@ -318,9 +344,9 @@ const goToInputPage = () => {
 }
 
 const refreshData = () => {
-  if (!searchForm.productName && !searchForm.factoryName) return
+  if (!searchForm.type && !searchForm.productName && !searchForm.factoryName) return
   currentPage.value = 1
-  router.push({ query: { prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: 1 } })
+  router.push({ query: { type: searchForm.type || undefined, prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: 1 } })
   fetchFoodData()
 }
 
@@ -337,6 +363,8 @@ watch(isEditingPage, (newVal) => {
 })
 
 watch(() => route.query, (newQ) => {
+  // 💡 라우터가 변경될 때도 값이 없으면 '유제품' 유지
+  searchForm.type = newQ.type || '유제품'
   searchForm.productName = newQ.prod || ''
   searchForm.factoryName = newQ.fact || ''
   currentPage.value = Number(newQ.page) || 1
