@@ -8,7 +8,7 @@
         </NuxtLink>
       </div>
 
-      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scrollbar">
         <p class="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Menu</p>
 
         <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-600/20 text-blue-400 rounded-xl font-bold transition-colors">
@@ -42,28 +42,28 @@
       <header class="h-20 bg-[#1E293B] border-b border-slate-700/50 flex items-center justify-between px-6 sm:px-10 shrink-0 z-10">
         <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">대시보드</h1>
 
-<!--        <div class="flex items-center gap-4 sm:gap-6">-->
-<!--          <div class="hidden sm:flex items-center bg-[#0F172A] border border-slate-700/50 rounded-full px-4 py-2 w-64 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">-->
-<!--            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>-->
-<!--            <input type="text" placeholder="저장된 데이터 검색..." class="bg-transparent border-none outline-none text-sm ml-2 w-full text-slate-200 placeholder:text-slate-500">-->
-<!--          </div>-->
-<!--          <button class="text-slate-400 hover:text-blue-400 transition-colors relative">-->
-<!--            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>-->
-<!--            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-[#1E293B]"></span>-->
-<!--          </button>-->
-<!--          <div class="w-10 h-10 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-lg border border-blue-500/30 cursor-pointer">-->
-<!--            M-->
-<!--          </div>-->
-<!--        </div>-->
+        <div class="flex items-center gap-4 sm:gap-6">
+          <div class="hidden sm:flex items-center bg-[#0F172A] border border-slate-700/50 rounded-full px-4 py-2 w-64 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <input type="text" placeholder="저장된 데이터 검색..." class="bg-transparent border-none outline-none text-sm ml-2 w-full text-slate-200 placeholder:text-slate-500">
+          </div>
+          <button class="text-slate-400 hover:text-blue-400 transition-colors relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-[#1E293B]"></span>
+          </button>
+          <div class="w-10 h-10 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-lg border border-blue-500/30 cursor-pointer">
+            M
+          </div>
+        </div>
       </header>
 
-      <div class="flex-1 overflow-y-auto p-6 sm:p-10 custom-scrollbar">
-        <div class="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+      <div class="flex-1 overflow-y-auto p-6 sm:p-10 custom-scrollbar relative">
+        <div class="max-w-7xl mx-auto space-y-6 sm:space-y-10">
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             <div class="bg-[#1E293B] p-6 rounded-2xl shadow-sm border border-slate-700/50 flex items-center justify-between group hover:border-blue-500/50 transition-colors cursor-pointer">
               <div>
-                <p class="text-sm font-bold text-slate-400 mb-1">총 저장된 리포트</p>
+                <p class="text-sm font-bold text-slate-400 mb-1">최근 6개월 신제품</p>
                 <h3 class="text-3xl font-black text-white">124<span class="text-base font-medium text-slate-500 ml-1">건</span></h3>
               </div>
               <div class="w-14 h-14 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -92,8 +92,8 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 bg-[#1E293B] rounded-2xl shadow-sm border border-slate-700/50 p-6 sm:p-8">
               <div class="flex items-center justify-between mb-8">
                 <div>
@@ -158,7 +158,57 @@
                 </div>
               </div>
             </div>
+          </div>
 
+          <div class="mt-8 sm:mt-12">
+            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6">
+              <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">최적의 식품 제조 파트너 탐색</h2>
+
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="relative group">
+                  <button class="flex items-center gap-1.5 bg-[#1E293B] border border-slate-700/50 text-slate-300 text-xs font-medium rounded-xl px-4 py-2.5 shadow-sm hover:border-slate-600 transition">
+                    <span class="font-bold">최신순</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                  <div class="absolute top-full left-0 mt-1 w-28 bg-[#1E293B] border border-slate-700/50 rounded-xl shadow-lg p-1 space-y-1 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-opacity z-50">
+                    <a href="#" class="block px-3 py-1.5 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:text-white rounded-md">최신순</a>
+                    <a href="#" class="block px-3 py-1.5 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:text-white rounded-md">과거순</a>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 bg-[#1E293B] border border-slate-700/50 rounded-full p-1 shadow-inner">
+                  <button class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-full shadow-sm">전체</button>
+                  <button class="px-4 py-2 bg-transparent text-slate-400 text-xs font-medium rounded-full hover:bg-slate-800 hover:text-slate-200 transition">가공유</button>
+                  <button class="px-4 py-2 bg-transparent text-slate-400 text-xs font-medium rounded-full hover:bg-slate-800 hover:text-slate-200 transition">농후발효유</button>
+                  <button class="px-4 py-2 bg-transparent text-slate-400 text-xs font-medium rounded-full hover:bg-slate-800 hover:text-slate-200 transition">커피</button>
+                </div>
+
+                <div class="flex items-center gap-1.5 bg-[#1E293B] border border-slate-700/50 rounded-full p-1 shadow-inner">
+                  <button class="px-4 py-2 bg-slate-700 text-white text-xs font-bold rounded-full shadow-sm">제조사</button>
+                  <button class="px-4 py-2 bg-transparent text-slate-400 text-xs font-medium rounded-full hover:bg-slate-800 hover:text-slate-200 transition">품목명</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+              <div v-for="i in 10" :key="i" class="bg-[#1E293B] rounded-2xl p-5 border border-slate-700/50 hover:border-blue-500/50 transition shadow-sm flex flex-col cursor-pointer group">
+                <div class="w-full h-32 bg-[#0F172A] rounded-xl mb-4 flex items-center justify-center border border-slate-800 group-hover:border-slate-600 transition-colors">
+                  <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+
+                <h4 class="text-sm font-bold text-white mb-1 truncate group-hover:text-blue-400 transition-colors">프리미엄 국내산 제품 {{ i }}호</h4>
+                <p class="text-xs text-slate-400 mb-4 truncate">풀무원식품(주)</p>
+
+                <div class="flex items-center gap-2 mb-4">
+                  <span class="text-[10px] font-medium text-slate-300 bg-slate-800 px-2 py-1 rounded">정상</span>
+                  <span class="text-[10px] font-medium text-amber-400 bg-amber-400/10 px-2 py-1 rounded">쿠팡 소싱</span>
+                </div>
+
+                <button class="mt-auto w-full py-2 bg-blue-600/20 text-blue-400 text-xs font-bold rounded-lg hover:bg-blue-600 hover:text-white transition-colors border border-blue-500/30">
+                  AI 리포트
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -168,11 +218,10 @@
 </template>
 
 <script setup>
-// 순수 퍼블리싱 UI
+// 순수 퍼블리싱 UI (데이터 연동 없이 UI만 구성)
 </script>
 
 <style scoped>
-/* 다크모드에 맞춘 스크롤바 커스텀 */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
