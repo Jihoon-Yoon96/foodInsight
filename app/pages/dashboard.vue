@@ -71,10 +71,11 @@
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
             <div class="lg:col-span-2 bg-white dark:bg-[#1E293B] rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700/50 p-6 sm:p-8 transition-colors">
               <div class="flex items-center justify-between mb-8">
                 <div>
-                  <h3 class="text-lg font-bold text-gray-900 dark:text-white transition-colors">제품유형별 출시 동향</h3>
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white transition-colors">제품유형별 신제품 출시 동향</h3>
                   <p class="text-xs text-gray-500 dark:text-slate-400 mt-1 transition-colors">최근 6개월 간 주요 제품유형별 신제품 등록 추이</p>
                 </div>
                 <div class="flex gap-4 hidden sm:flex">
@@ -93,9 +94,22 @@
                 </div>
 
                 <svg class="absolute inset-0 w-full h-full pb-8 overflow-visible z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  <polyline :points="lineChartData.blue" fill="none" stroke="#3B82F6" stroke-width="2.5" vector-effect="non-scaling-stroke" />
-                  <polyline :points="lineChartData.green" fill="none" stroke="#10B981" stroke-width="2.5" stroke-dasharray="4" vector-effect="non-scaling-stroke" />
+                  <polyline :points="bluePolyline" fill="none" stroke="#3B82F6" stroke-width="2.5" vector-effect="non-scaling-stroke" />
+                  <polyline :points="greenPolyline" fill="none" stroke="#10B981" stroke-width="2.5" stroke-dasharray="4" vector-effect="non-scaling-stroke" />
                 </svg>
+
+                <div class="absolute inset-0 pb-8 z-20 pointer-events-none w-full h-full">
+                  <span v-for="(p, i) in chartPoints.blue" :key="'bl'+i"
+                        class="absolute text-[10px] font-black text-blue-600 dark:text-blue-400 transform -translate-x-1/2 -translate-y-full pb-1 transition-all"
+                        :style="{ left: p.x + '%', top: p.y + '%' }">
+                    {{ p.value }}
+                  </span>
+                  <span v-for="(p, i) in chartPoints.green" :key="'gl'+i"
+                        class="absolute text-[10px] font-black text-emerald-600 dark:text-emerald-400 transform -translate-x-1/2 pt-1 transition-all"
+                        :style="{ left: p.x + '%', top: p.y + '%' }">
+                    {{ p.value }}
+                  </span>
+                </div>
 
                 <div v-for="(month, idx) in last6Months" :key="idx" class="flex-1 flex flex-col items-center justify-end h-full relative z-20">
                   <span class="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-slate-400 mt-3 transition-colors">{{ month }}</span>
@@ -103,26 +117,28 @@
               </div>
             </div>
 
-            <div class="lg:col-span-1 bg-white dark:bg-[#1E293B] rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700/50 p-6 sm:p-8 flex flex-col items-center justify-center transition-colors">
+            <div class="lg:col-span-1 bg-white dark:bg-[#1E293B] rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700/50 p-6 sm:p-8 flex flex-col items-center transition-colors">
               <div class="w-full mb-6">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white transition-colors">제품유형별 비중</h3>
-                <p class="text-xs text-gray-500 dark:text-slate-400 mt-1 transition-colors">저장된 리포트 기준</p>
               </div>
 
-              <div class="relative w-48 h-48 rounded-full shrink-0 shadow-lg" :style="{ background: donutStyle }">
+              <div class="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full shrink-0 shadow-lg transition-all" :style="{ background: donutStyle }">
                 <div class="absolute inset-4 bg-white dark:bg-[#1E293B] rounded-full flex flex-col items-center justify-center transition-colors">
-                  <span class="text-3xl font-black text-gray-900 dark:text-white transition-colors">{{ totalProducts }}</span>
+                  <span class="text-3xl font-black text-gray-900 dark:text-white transition-colors">{{ totalCategoryCount }}</span>
                   <span class="text-xs font-medium text-gray-400 dark:text-slate-400 mt-1 transition-colors">Total</span>
                 </div>
               </div>
 
-              <div class="w-full mt-8 space-y-3">
-                <div v-for="item in categoryWeights" :key="item.label" class="flex items-center justify-between text-sm">
-                  <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full" :class="item.color"></span>
-                    <span class="text-gray-600 dark:text-slate-300 font-medium transition-colors">{{ item.label }}</span>
+              <div class="w-full mt-8 space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+                <div v-for="item in categoryWeights" :key="item.label" class="flex items-center justify-between text-sm group">
+                  <div class="flex items-center gap-2 min-w-0 pr-2">
+                    <span class="w-3 h-3 rounded-full shrink-0" :class="item.colorClass"></span>
+                    <span class="text-gray-600 dark:text-slate-300 font-medium group-hover:text-gray-900 dark:group-hover:text-white transition-colors truncate">{{ item.label }}</span>
                   </div>
-                  <span class="text-gray-900 dark:text-white font-bold transition-colors">{{ item.percent }}%</span>
+                  <div class="text-right shrink-0">
+                    <span class="text-gray-900 dark:text-white font-bold mr-2 transition-colors">{{ item.value }}건</span>
+                    <span class="text-gray-400 dark:text-slate-500 font-medium text-xs w-8 inline-block">{{ item.percent }}%</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -190,7 +206,9 @@ const selectedCompetitor = ref('빙그레')
 const isModalOpen = ref(false)
 const selectedDashboardItem = ref(null)
 
-// 💡 상단 카드들 및 값 조합 로직
+// -----------------------------------------------------
+// 💡 상단 카드 통계 데이터 로직
+// -----------------------------------------------------
 const totalProducts = computed(() => {
   const seed = selectedCategory.value.length * 7 + selectedCompetitor.value.length * 13;
   return 80 + (seed % 150);
@@ -250,36 +268,79 @@ const computedStats = computed(() => {
   ]
 })
 
-// 💡 제품유형별 비중 도넛 차트 비율 계산 로직
-const categoryWeights = computed(() => {
-  const seed = selectedCompetitor.value.length * 17 + selectedCategory.value.length * 5;
-  const p1 = 30 + (seed % 25);
-  const p2 = 20 + (seed % 15);
-  const p3 = 15 + (seed % 10);
-  const p4 = 100 - p1 - p2 - p3;
 
-  return [
-    { label: selectedCategory.value, percent: p1, color: 'bg-blue-500', hex: '#3B82F6' },
-    { label: '기타가공품', percent: p2, color: 'bg-purple-500', hex: '#8B5CF6' },
-    { label: '유산균음료', percent: p3, color: 'bg-emerald-500', hex: '#10B981' },
-    { label: '우유 등', percent: p4, color: 'bg-orange-500', hex: '#F59E0B' }
+// -----------------------------------------------------
+// 💡 제품유형별 비중 도넛 차트 로직 (경쟁업체 값에 따라 데이터 변동)
+// -----------------------------------------------------
+const dynamicCategoryDataList = computed(() => {
+  // 경쟁업체 이름을 활용한 시드로 각 카테고리별 건수를 무작위이면서 일정하게 생성
+  const seedBase = selectedCompetitor.value.charCodeAt(0) + selectedCompetitor.value.length * 5;
+
+  const colors = [
+    { class: 'bg-blue-500', hex: '#3B82F6' },
+    { class: 'bg-purple-500', hex: '#8B5CF6' },
+    { class: 'bg-emerald-500', hex: '#10B981' },
+    { class: 'bg-amber-500', hex: '#F59E0B' },
+    { class: 'bg-red-500', hex: '#EF4444' },
+    { class: 'bg-pink-500', hex: '#EC4899' },
+    { class: 'bg-teal-500', hex: '#14B8A6' },
+    { class: 'bg-orange-500', hex: '#F97316' },
+    { class: 'bg-cyan-500', hex: '#06B6D4' },
+    { class: 'bg-indigo-500', hex: '#6366F1' }
   ];
+
+  return CATEGORY_OPTIONS.map((cat, index) => {
+    const catSeed = cat.charCodeAt(0) + cat.length;
+    const val = 10 + ((seedBase * (index + 1) + catSeed) % 150);
+    return {
+      label: cat,
+      value: val,
+      colorClass: colors[index % colors.length].class,
+      hex: colors[index % colors.length].hex
+    };
+  });
+});
+
+const totalCategoryCount = computed(() => {
+  return dynamicCategoryDataList.value.reduce((acc, curr) => acc + curr.value, 0);
+});
+
+const categoryWeights = computed(() => {
+  const total = totalCategoryCount.value;
+  // 값이 높은 순서대로 정렬해서 출력
+  const sorted = [...dynamicCategoryDataList.value].sort((a, b) => b.value - a.value);
+
+  return sorted.map(item => ({
+    ...item,
+    percent: Math.round((item.value / total) * 100)
+  }));
 });
 
 const donutStyle = computed(() => {
-  const cw = categoryWeights.value;
-  const s1 = cw[0].percent;
-  const s2 = s1 + cw[1].percent;
-  const s3 = s2 + cw[2].percent;
-  return `conic-gradient(${cw[0].hex} 0% ${s1}%, ${cw[1].hex} ${s1}% ${s2}%, ${cw[2].hex} ${s2}% ${s3}%, ${cw[3].hex} ${s3}% 100%)`;
+  let gradientStr = [];
+  let currentPercent = 0;
+  const total = totalCategoryCount.value;
+
+  categoryWeights.value.forEach((item, index) => {
+    const start = currentPercent;
+    const exactPercent = (item.value / total) * 100;
+    const end = index === categoryWeights.value.length - 1 ? 100 : currentPercent + exactPercent;
+    gradientStr.push(`${item.hex} ${start}% ${end}%`);
+    currentPercent = end;
+  });
+
+  return `conic-gradient(${gradientStr.join(', ')})`;
 });
 
-// 💡 최근 6개월 계산 로직 (이번달 기준 - 1)
+
+// -----------------------------------------------------
+// 💡 출시 동향 라인 차트 (동원 및 경쟁업체 데이터 변동 처리)
+// -----------------------------------------------------
 const last6Months = computed(() => {
   const result = [];
   const d = new Date();
-  let month = d.getMonth(); // 0~11로 나오므로 이미 이번달 기준 -1된 월을 가리킴.
-  if (month === 0) month = 12; // 만약 현재 1월(0)이라면 전월은 12월
+  let month = d.getMonth();
+  if (month === 0) month = 12;
 
   for (let i = 5; i >= 0; i--) {
     let m = month - i;
@@ -289,22 +350,33 @@ const last6Months = computed(() => {
   return result;
 });
 
-// 💡 출시 동향 라인 차트 포인트 동적 계산 로직
-const lineChartData = computed(() => {
-  // 고정된 동원 데이터 (파란선)
-  const bluePoints = "8,70 25,50 42,65 59,35 75,45 92,20";
+const chartPoints = computed(() => {
+  const xs = [8, 25, 42, 59, 75, 92]; // X축 고정 % 좌표
 
-  // 경쟁업체별로 변화하는 데이터 (초록 점선)
-  const seed = selectedCompetitor.value.charCodeAt(0) + selectedCompetitor.value.length * 7;
-  const xs = [8, 25, 42, 59, 75, 92];
-  const greenPoints = xs.map((x, i) => {
-    const y = 20 + ((seed * (i + 3)) % 60); // 랜덤하게 차트 변동
-    return `${x},${y}`;
-  }).join(' ');
+  // 파란 실선 (동원) - 카테고리가 바뀌면 변경되도록 계산
+  const catSeed = selectedCategory.value.charCodeAt(0) + selectedCategory.value.length * 11;
+  const blueValues = xs.map((_, i) => 10 + ((catSeed * (i + 2)) % 70));
 
-  return { blue: bluePoints, green: greenPoints };
+  // 초록 점선 (경쟁업체 + 선택된 카테고리 연동 데이터)
+  const compSeed = selectedCompetitor.value.charCodeAt(0) + selectedCompetitor.value.length * 7;
+  const greenValues = xs.map((_, i) => 15 + (((compSeed + catSeed) * (i + 3)) % 65));
+
+  const maxVal = Math.max(...blueValues, ...greenValues) * 1.3;
+  const toY = (val) => 100 - (val / maxVal * 80) - 10;
+
+  const blue = blueValues.map((v, i) => ({ x: xs[i], y: toY(v), value: v }));
+  const green = greenValues.map((v, i) => ({ x: xs[i], y: toY(v), value: v }));
+
+  return { blue, green };
 });
 
+const bluePolyline = computed(() => chartPoints.value.blue.map(p => `${p.x},${p.y}`).join(' '));
+const greenPolyline = computed(() => chartPoints.value.green.map(p => `${p.x},${p.y}`).join(' '));
+
+
+// -----------------------------------------------------
+// 이벤트 핸들러 및 UI 매핑
+// -----------------------------------------------------
 const handleCardClick = (stat) => {
   if (stat.isDropdown) {
     activeDropdown.value = activeDropdown.value === stat.id ? null : stat.id
@@ -325,8 +397,6 @@ const closeDashboardModal = () => {
   setTimeout(() => { selectedDashboardItem.value = null }, 300)
 }
 
-
-// 커스텀 UI 매핑 로직 (다크/라이트 완벽 지원)
 const getCardBgClass = (status) => {
   if (status === 'focus') return 'bg-blue-50 dark:bg-[#111A2C] border-blue-200 dark:border-[#2B4168]';
   return 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-slate-700/50';
