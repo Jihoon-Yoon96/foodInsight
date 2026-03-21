@@ -41,6 +41,15 @@
               <button @click="clearFilters" v-if="selectedTypes.length > 0" class="text-[11px] font-bold text-gray-400 hover:text-blue-500 transition-colors">필터 초기화</button>
             </div>
 
+            <div v-if="selectedTypes.length > 0" class="flex flex-wrap gap-2 mb-4 pb-4 border-b border-gray-100 dark:border-slate-700/50 transition-colors">
+              <span v-for="type in selectedTypes" :key="'tag-'+type" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-bold rounded-lg border border-blue-200 dark:border-blue-800/50 transition-colors">
+                {{ type }}
+                <button @click="removeType(type)" class="text-blue-400 dark:text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full p-0.5 transition-colors focus:outline-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </span>
+            </div>
+
             <div class="flex flex-nowrap gap-2 sm:gap-3 overflow-x-auto custom-scrollbar pb-2">
               <label v-for="cat in availableTypes" :key="cat.name" class="shrink-0 cursor-pointer flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors">
                 <input
@@ -184,11 +193,9 @@ const isReportLoading = ref(false)
 const selectedItem = ref(null)
 const reportData = ref(null)
 
-// 💡 1. 객체 형태로 변환하여 이름과 갯수를 구하는 로직으로 변경
 const availableTypes = computed(() => {
   const typeCounts = {}
 
-  // 전체 검색 결과에서 각 제품유형의 개수 카운트
   rawItems.value.forEach(item => {
     const type = item.PRDLST_DCNM
     if (type) {
@@ -196,7 +203,6 @@ const availableTypes = computed(() => {
     }
   })
 
-  // 카테고리명을 기준으로 가나다순 정렬하여 배열로 변환
   return Object.keys(typeCounts)
       .sort((a, b) => a.localeCompare(b, 'ko'))
       .map(cat => ({
@@ -205,7 +211,6 @@ const availableTypes = computed(() => {
       }))
 })
 
-// 💡 2. 체크된 유형과 정렬 상태에 맞춰 로컬에서 실시간으로 데이터 필터링 및 정렬
 const filteredAndSortedItems = computed(() => {
   let items = [...rawItems.value]
 
@@ -242,6 +247,12 @@ const formatDate = (dateString) => {
   return `${dateString.slice(0, 4)}.${dateString.slice(4, 6)}.${dateString.slice(6, 8)}`
 }
 
+// 💡 개별 태그 삭제 함수
+const removeType = (typeToRemove) => {
+  selectedTypes.value = selectedTypes.value.filter(t => t !== typeToRemove)
+  onFilterChange()
+}
+
 const clearFilters = () => {
   selectedTypes.value = []
   onFilterChange()
@@ -260,7 +271,7 @@ const applyDummyDataFallback = () => {
   if (searchForm.factoryName) {
     dummyItems = dummyItems.filter(item => item.BSSH_NM.includes(searchForm.factoryName));
   }
-  rawItems.value = dummyItems; // 로컬 필터링을 위해 원본 데이터에 할당
+  rawItems.value = dummyItems;
 }
 
 const openReportModal = async (item) => {
@@ -410,7 +421,7 @@ input[type="number"] {
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
-  height: 6px; /* 💡 가로 스크롤을 위한 두께 설정 */
+  height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
