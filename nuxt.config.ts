@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   tailwindcss: {
     exposeConfig: true,
     viewer: true,
+    config: {
+      darkMode: 'class',
+    }
   },
   // 서버와 클라이언트에서 사용할 환경 변수 설정
   runtimeConfig: {

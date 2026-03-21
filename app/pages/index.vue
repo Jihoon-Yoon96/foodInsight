@@ -1,47 +1,41 @@
 <template>
-  <div class="min-h-screen bg-[#F7F9F7] flex flex-col items-center justify-center px-4 font-sans py-20">
+  <div class="min-h-screen bg-[#F7F9F7] dark:bg-[#0F172A] flex flex-col items-center justify-center px-4 font-sans py-20 transition-colors duration-300">
     <div class="text-center mb-12">
-<!--      <p class="text-lg md:text-xl font-medium text-blue-700 mb-2 tracking-tight">-->
-<!--&lt;!&ndash;        데이터로 연결하는 식품 비즈니스 파트너&ndash;&gt;-->
-<!--        쉽고 빠르게 찾는 최적의 영업 파트너-->
-<!--      </p>-->
-      <h1 class="text-4xl md:text-5xl font-extrabold text-blue-900 leading-tight">
-<!--        쉽고 빠르게 찾는<br />-->
-<!--        <span class="text-[#3873B6]">최적의 영업 파트너</span>-->
+      <h1 class="text-4xl md:text-5xl font-extrabold text-blue-900 dark:text-white leading-tight transition-colors">
         D-INSIGHT<br />
-        <span class="text-[#3873B6] text-2xl">쉽고 빠르게 찾는 최적의 영업 파트너</span>
+        <span class="text-[#3873B6] dark:text-blue-400 text-2xl">쉽고 빠르게 찾는 최적의 영업 파트너</span>
       </h1>
-      <p class="mt-4 text-gray-500 text-sm md:text-base">
+      <p class="mt-4 text-gray-500 dark:text-slate-400 text-sm md:text-base transition-colors">
         스마트한 AI 리포트로 한눈에 파악 하세요.
       </p>
     </div>
 
-    <div class="w-full max-w-5xl bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row items-stretch overflow-hidden border border-blue-100">
-      <div class="flex-1 border-b md:border-b-0 md:border-r border-gray-100 p-4 md:p-6 group focus-within:bg-blue-50 transition">
-        <label class="block text-xs font-bold text-blue-600 mb-1 uppercase tracking-wider">품목명</label>
+    <div class="w-full max-w-5xl bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl flex flex-col md:flex-row items-stretch overflow-hidden border border-blue-100 dark:border-slate-700/50 transition-colors">
+      <div class="flex-1 border-b md:border-b-0 md:border-r border-gray-100 dark:border-slate-700/50 p-4 md:p-6 group focus-within:bg-blue-50 dark:focus-within:bg-slate-800 transition-colors">
+        <label class="block text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 uppercase tracking-wider">품목명</label>
         <input
             v-model="searchForm.productName"
             type="text"
             placeholder="제품명을 입력하세요 (예: 토마토)"
-            class="w-full bg-transparent text-lg font-semibold focus:outline-none placeholder:text-gray-300"
+            class="w-full bg-transparent text-lg font-semibold text-gray-900 dark:text-slate-200 focus:outline-none placeholder:text-gray-300 dark:placeholder:text-slate-500"
             @keyup.enter="handleSearch"
         />
       </div>
 
-      <div class="flex-1 p-4 md:p-6 group focus-within:bg-blue-50 transition">
-        <label class="block text-xs font-bold text-blue-600 mb-1 uppercase tracking-wider">제조사명</label>
+      <div class="flex-1 p-4 md:p-6 group focus-within:bg-blue-50 dark:focus-within:bg-slate-800 transition-colors">
+        <label class="block text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 uppercase tracking-wider">제조사명</label>
         <input
             v-model="searchForm.factoryName"
             type="text"
             placeholder="제조사명 입력 (예: 오뚜기)"
-            class="w-full bg-transparent text-lg font-semibold focus:outline-none placeholder:text-gray-300"
+            class="w-full bg-transparent text-lg font-semibold text-gray-900 dark:text-slate-200 focus:outline-none placeholder:text-gray-300 dark:placeholder:text-slate-500"
             @keyup.enter="handleSearch"
         />
       </div>
 
       <button
           @click="handleSearch"
-          class="bg-[#3873B6] hover:bg-[#2C5C92] transition-all w-full md:w-32 py-4 md:py-0 flex items-center justify-center text-white shadow-inner"
+          class="bg-[#3873B6] dark:bg-blue-600 hover:bg-[#2C5C92] dark:hover:bg-blue-700 transition-colors w-full md:w-32 py-4 md:py-0 flex items-center justify-center text-white shadow-inner"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -51,12 +45,12 @@
 
     <div class="mt-16 w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
 
-      <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-blue-50 flex flex-col hover:border-blue-200 hover:shadow-md transition duration-300 h-[420px]">
+      <div class="bg-white dark:bg-[#1E293B] p-6 md:p-8 rounded-3xl shadow-sm border border-blue-50 dark:border-slate-700/50 flex flex-col hover:border-blue-200 dark:hover:border-slate-500/50 hover:shadow-md transition-all duration-300 h-[420px]">
         <div class="flex items-center gap-4 mb-6">
-          <div class="p-3 bg-blue-50 rounded-xl">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <div class="p-3 bg-blue-50 dark:bg-slate-800 rounded-xl transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           </div>
-          <h4 class="font-bold text-xl text-gray-800 tracking-tight">최근 검색어</h4>
+          <h4 class="font-bold text-xl text-gray-800 dark:text-white tracking-tight transition-colors">최근 검색어</h4>
         </div>
 
         <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
@@ -64,58 +58,58 @@
             <li v-for="(item, index) in recentSearches.slice(0, 5)" :key="index">
               <button
                   @click="clickRecentSearch(item)"
-                  class="w-full text-left bg-gray-50 hover:bg-blue-50 border border-gray-100 hover:border-blue-200 px-4 py-3 rounded-xl transition-all group flex items-center justify-between"
+                  class="w-full text-left bg-gray-50 dark:bg-[#0F172A] hover:bg-blue-50 dark:hover:bg-slate-800 border border-gray-100 dark:border-slate-700/50 hover:border-blue-200 dark:hover:border-slate-600 px-4 py-3 rounded-xl transition-all group flex items-center justify-between"
               >
-                <span class="text-[15px] font-medium text-gray-600 group-hover:text-blue-700 truncate pr-4">
+                <span class="text-[15px] font-medium text-gray-600 dark:text-slate-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 truncate pr-4 transition-colors">
                   {{ item.label }}
                 </span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300 group-hover:text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300 dark:text-slate-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 shrink-0 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
               </button>
             </li>
           </ul>
           <div v-else class="h-full flex flex-col items-center justify-center text-center pb-6">
-            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <div class="w-16 h-16 bg-gray-50 dark:bg-[#0F172A] rounded-full flex items-center justify-center mb-3 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </div>
-            <p class="text-sm font-medium text-gray-400">최근 검색한 정보가 없습니다.</p>
+            <p class="text-sm font-medium text-gray-400 dark:text-slate-500 transition-colors">최근 검색한 정보가 없습니다.</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-blue-50 flex flex-col hover:border-blue-200 hover:shadow-md transition duration-300 h-[420px]">
+      <div class="bg-white dark:bg-[#1E293B] p-6 md:p-8 rounded-3xl shadow-sm border border-blue-50 dark:border-slate-700/50 flex flex-col hover:border-blue-200 dark:hover:border-slate-500/50 hover:shadow-md transition-all duration-300 h-[420px]">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6">
           <div class="flex items-center gap-4">
             <div class="p-3 bg-blue-600 rounded-xl">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
             </div>
-            <h4 class="font-bold text-xl text-gray-800 tracking-tight">대시보드</h4>
+            <h4 class="font-bold text-xl text-gray-800 dark:text-white tracking-tight transition-colors">대시보드</h4>
           </div>
 
-          <div class="flex bg-gray-50 border border-gray-100 rounded-lg p-1">
-            <button @click="dashboardSortOrder = 'recent'" :class="dashboardSortOrder === 'recent' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-400 hover:text-gray-600'" class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">등록순</button>
-            <button @click="dashboardSortOrder = 'wholesale'" :class="dashboardSortOrder === 'wholesale' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-400 hover:text-gray-600'" class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">도매가순</button>
-            <button @click="dashboardSortOrder = 'retail'" :class="dashboardSortOrder === 'retail' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-400 hover:text-gray-600'" class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">소매가순</button>
+          <div class="flex bg-gray-50 dark:bg-[#0F172A] border border-gray-100 dark:border-slate-700/50 rounded-lg p-1 transition-colors">
+            <button @click="dashboardSortOrder = 'recent'" :class="dashboardSortOrder === 'recent' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300'" class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">등록순</button>
+            <button @click="dashboardSortOrder = 'wholesale'" :class="dashboardSortOrder === 'wholesale' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300'" class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">도매가순</button>
+            <button @click="dashboardSortOrder = 'retail'" :class="dashboardSortOrder === 'retail' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300'" class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">소매가순</button>
           </div>
         </div>
 
         <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
           <ul v-if="sortedDashboardItems.length > 0" class="space-y-3">
-            <li v-for="(item, index) in sortedDashboardItems" :key="index" @click="openDashboardModal(item)" class="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-md px-4 py-3 rounded-xl flex items-center justify-between cursor-pointer transition-all group">
+            <li v-for="(item, index) in sortedDashboardItems" :key="index" @click="openDashboardModal(item)" class="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-slate-700/50 hover:border-blue-300 dark:hover:border-slate-500/50 hover:shadow-md px-4 py-3 rounded-xl flex items-center justify-between cursor-pointer transition-all group">
               <div class="min-w-0 pr-4 flex-1">
-                <p class="text-[15px] font-bold text-gray-800 group-hover:text-blue-700 truncate transition-colors">{{ item.productName }}</p>
-                <p class="text-[11px] font-medium text-gray-500 truncate mt-0.5">{{ item.factoryName }}</p>
+                <p class="text-[15px] font-bold text-gray-800 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 truncate transition-colors">{{ item.productName }}</p>
+                <p class="text-[11px] font-medium text-gray-500 dark:text-slate-400 truncate mt-0.5 transition-colors">{{ item.factoryName }}</p>
               </div>
               <div class="text-right shrink-0">
-                <p class="text-[10px] text-gray-400 mb-0.5">최신 도매가 <span class="font-bold text-blue-600 ml-1">{{ getLatestPrice(item).wholesale.toLocaleString() }}원</span></p>
-                <p class="text-[10px] text-gray-400">최신 소매가 <span class="font-bold text-gray-800 ml-1">{{ getLatestPrice(item).retail.toLocaleString() }}원</span></p>
+                <p class="text-[10px] text-gray-400 dark:text-slate-500 mb-0.5 transition-colors">최신 도매가 <span class="font-bold text-blue-600 dark:text-blue-400 ml-1">{{ getLatestPrice(item).wholesale.toLocaleString() }}원</span></p>
+                <p class="text-[10px] text-gray-400 dark:text-slate-500 transition-colors">최신 소매가 <span class="font-bold text-gray-800 dark:text-white ml-1">{{ getLatestPrice(item).retail.toLocaleString() }}원</span></p>
               </div>
             </li>
           </ul>
           <div v-else class="h-full flex flex-col items-center justify-center text-center pb-6">
-            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+            <div class="w-16 h-16 bg-gray-50 dark:bg-[#0F172A] rounded-full flex items-center justify-center mb-3 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
             </div>
-            <p class="text-sm font-medium text-gray-400">AI가 분석한 정보가 없습니다.</p>
+            <p class="text-sm font-medium text-gray-400 dark:text-slate-500 transition-colors">AI가 분석한 정보가 없습니다.</p>
           </div>
         </div>
       </div>

@@ -1,11 +1,11 @@
 <template>
   <div v-if="isOpen" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity p-0 sm:p-4">
-    <div class="bg-white w-full max-w-3xl rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden relative flex flex-col max-h-[85vh] sm:max-h-[90vh]">
+    <div class="bg-white dark:bg-[#1E293B]w-full max-w-3xl rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden relative flex flex-col max-h-[85vh] sm:max-h-[90vh]">
 
-      <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 flex justify-between items-start bg-blue-50/30 shrink-0">
+      <div class="px-5 sm:px-8 py-4 sm:py-6 border-b dark:border-slate-700/50 flex justify-between items-start bg-blue-50/30 shrink-0">
         <div class="min-w-0 pr-4">
           <span class="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-sky-100 text-sky-700 text-[10px] sm:text-xs font-black rounded-md uppercase tracking-wide">AI 분석 리포트</span>
-          <h2 class="text-xl sm:text-2xl font-black text-gray-900 mt-1 sm:mt-2 truncate">{{ selectedItem?.PRDLST_NM }}</h2>
+          <h2 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-slate-200 mt-1 sm:mt-2 truncate">{{ selectedItem?.PRDLST_NM }}</h2>
           <div class="flex items-center gap-3 mt-1 sm:mt-2">
             <p class="text-xs sm:text-sm text-gray-500 font-medium truncate">{{ selectedItem?.BSSH_NM }}</p>
             <a v-if="reportData?.isCoupangAvailable" :href="reportData.coupangLink" target="_blank" class="inline-flex px-2 py-1 bg-blue-100 text-blue-700 text-[10px] sm:text-xs font-bold rounded hover:bg-blue-200 transition-colors items-center gap-1 shadow-sm">
@@ -28,22 +28,22 @@
         <div v-else-if="reportData" class="space-y-6 sm:space-y-8">
           <div>
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 sm:gap-0 mb-3">
-              <h3 class="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
+              <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-slate-200 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
                 AI 시장 요약
               </h3>
-              <button v-if="!isInputActive" @click="toggleInput" class="px-3 py-1.5 bg-white border border-blue-200 text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-1 shadow-sm w-full sm:w-auto">
+              <button v-if="!isInputActive" @click="toggleInput" class="px-3 py-1.5 bg-white dark:bg-[#1E293B]border border-blue-200 text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-1 shadow-sm w-full sm:w-auto">
                 추가 분석 요청하기
               </button>
             </div>
-            <div class="bg-gray-50 p-4 sm:p-5 rounded-2xl border border-gray-100 text-gray-700 leading-relaxed text-[13px] sm:text-[15px]">
+            <div class="bg-gray-50 p-4 sm:p-5 rounded-2xl border dark:border-slate-700/50 text-gray-700 leading-relaxed text-[13px] sm:text-[15px]">
               {{ reportData.summary }}
             </div>
           </div>
 
           <div v-if="reportData?.annualSales && reportData.annualSales.length > 0">
             <div class="flex items-center justify-between mb-4">
-              <h3 class="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
+              <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-slate-200 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
                 최근 4년 예상 판매량 추이
               </h3>
@@ -51,7 +51,7 @@
                 총 {{ reportData.totalSales.toLocaleString() }}개
               </span>
             </div>
-            <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
+            <div class="bg-white dark:bg-[#1E293B]border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
               <div class="flex justify-end gap-4 mb-8 min-w-[350px]">
                 <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-gray-500">
                   <span class="w-3 h-3 rounded-sm bg-blue-500"></span>연간 판매량
@@ -78,13 +78,13 @@
             </div>
           </div>
 
-          <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-            <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-b border-gray-100">
+          <div class="bg-white dark:bg-[#1E293B]border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-b dark:border-slate-700/50">
               <p class="text-gray-800 text-[11px] sm:text-sm font-bold tracking-wider uppercase">최근 4년 예상 도소매가 추이</p>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-xs sm:text-sm text-left min-w-[300px]">
-                <thead class="bg-white text-gray-400 border-b border-gray-100">
+                <thead class="bg-white dark:bg-[#1E293B]text-gray-400 border-b dark:border-slate-700/50">
                 <tr>
                   <th class="px-4 sm:px-6 py-2 sm:py-3 font-medium">연도</th>
                   <th class="px-4 sm:px-6 py-2 sm:py-3 text-right font-medium">도매가(B2B)</th>
@@ -95,15 +95,15 @@
                 <tr v-for="price in reportData.priceHistory" :key="price.year" class="hover:bg-blue-50/30 transition-colors">
                   <td class="px-4 sm:px-6 py-3 sm:py-4 font-bold text-gray-700">{{ price.year }}년</td>
                   <td class="px-4 sm:px-6 py-3 sm:py-4 text-right font-bold text-blue-600">{{ price.wholesale.toLocaleString() }}원</td>
-                  <td class="px-4 sm:px-6 py-3 sm:py-4 text-right font-bold text-gray-900">{{ price.retail.toLocaleString() }}원</td>
+                  <td class="px-4 sm:px-6 py-3 sm:py-4 text-right font-bold text-gray-900 dark:text-slate-200">{{ price.retail.toLocaleString() }}원</td>
                 </tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <div v-if="customAnalyses.length > 0 || isCustomLoading" class="pt-6 border-t border-gray-100">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <div v-if="customAnalyses.length > 0 || isCustomLoading" class="pt-6 border-t dark:border-slate-700/50">
+            <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-slate-200 mb-4 flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
               추가 분석 내용
             </h3>
@@ -120,7 +120,7 @@
                 </div>
               </div>
 
-              <div v-if="isCustomLoading" class="bg-gray-50 rounded-2xl p-8 flex flex-col items-center justify-center border border-gray-100">
+              <div v-if="isCustomLoading" class="bg-gray-50 rounded-2xl p-8 flex flex-col items-center justify-center border dark:border-slate-700/50">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-3"></div>
                 <p class="text-blue-700 font-bold text-sm animate-pulse">AI가 추가 분석을 진행 중입니다...</p>
               </div>
@@ -136,9 +136,9 @@
         </div>
       </div>
 
-      <div class="px-5 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-end items-center gap-3 shrink-0">
+      <div class="px-5 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t dark:border-slate-700/50 flex flex-col sm:flex-row justify-end items-center gap-3 shrink-0">
 
-        <div v-if="isInputActive" class="w-full flex items-center gap-2 bg-white border border-blue-200 rounded-xl px-2 py-1.5 shadow-inner flex-1 relative">
+        <div v-if="isInputActive" class="w-full flex items-center gap-2 bg-white dark:bg-[#1E293B]border border-blue-200 rounded-xl px-2 py-1.5 shadow-inner flex-1 relative">
           <input
               v-model="userPrompt"
               @keyup.enter="sendCustomPrompt"
@@ -149,12 +149,12 @@
           <button @click="sendCustomPrompt" :disabled="isCustomLoading" class="p-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
           </button>
-          <button @click="toggleInput" class="absolute -top-3 -right-2 bg-white border border-gray-200 text-gray-400 hover:text-gray-600 rounded-full p-1 shadow-sm transition">
+          <button @click="toggleInput" class="absolute -top-3 -right-2 bg-white dark:bg-[#1E293B]border border-gray-200 text-gray-400 hover:text-gray-600 rounded-full p-1 shadow-sm transition">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
-        <button v-if="!isInputActive" @click="toggleInput" class="w-full sm:w-auto px-6 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm shrink-0">
+        <button v-if="!isInputActive" @click="toggleInput" class="w-full sm:w-auto px-6 py-2.5 bg-white dark:bg-[#1E293B]border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm shrink-0">
           추가 분석 요청하기
         </button>
 

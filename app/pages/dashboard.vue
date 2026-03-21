@@ -1,12 +1,12 @@
 <template>
-  <div class="flex h-screen bg-[#0F172A] font-sans text-slate-200">
+  <div class="flex h-screen bg-gray-50 dark:bg-[#0F172A] font-sans text-gray-900 dark:text-slate-200">
 
     <!-- 사이드바  -->
     <TheSidebar />
 
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-      <header class="h-20 bg-[#1E293B] border-b border-slate-700/50 flex items-center justify-between px-6 sm:px-10 shrink-0 z-10">
+      <header class="h-20 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-slate-700/50 flex items-center justify-between px-6 sm:px-10 shrink-0 z-10">
         <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">대시보드</h1>
       </header>
 

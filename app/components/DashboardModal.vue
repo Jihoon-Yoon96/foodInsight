@@ -1,13 +1,13 @@
 <template>
   <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity p-4">
-    <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden relative flex flex-col max-h-[90vh]">
+    <div class="bg-white dark:bg-[#1E293B]w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden relative flex flex-col max-h-[90vh]">
 
-      <div class="px-6 sm:px-8 py-5 sm:py-6 border-b border-gray-100 flex justify-between items-center bg-blue-50/30 shrink-0">
+      <div class="px-6 sm:px-8 py-5 sm:py-6 border-b dark:border-slate-700/50 flex justify-between items-center bg-blue-50/30 shrink-0">
         <div class="min-w-0 pr-4">
           <span class="px-2.5 py-1 bg-sky-100 text-sky-700 text-[10px] sm:text-xs font-black rounded-md uppercase tracking-wide">
             AI 분석 정보
           </span>
-          <h2 class="text-xl sm:text-2xl font-black text-gray-900 mt-2 truncate">{{ selectedItem?.productName }}</h2>
+          <h2 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-slate-200 mt-2 truncate">{{ selectedItem?.productName }}</h2>
           <p class="text-xs sm:text-sm text-gray-500 font-medium truncate">{{ selectedItem?.factoryName }}</p>
         </div>
         <button @click="$emit('close')" class="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors shrink-0">
@@ -18,18 +18,18 @@
       <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-8">
 
         <div v-if="selectedItem?.summary">
-          <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+          <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-slate-200 mb-3 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
             AI가 분석했던 정보
           </h3>
-          <div class="bg-gray-50 p-4 sm:p-5 rounded-2xl border border-gray-100 text-gray-700 leading-relaxed text-[13px] sm:text-[15px]">
+          <div class="bg-gray-50 p-4 sm:p-5 rounded-2xl border dark:border-slate-700/50 text-gray-700 leading-relaxed text-[13px] sm:text-[15px]">
             {{ selectedItem.summary }}
           </div>
         </div>
 
         <div v-if="selectedItem?.annualSales && selectedItem.annualSales.length > 0">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
+            <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-slate-200 flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
               최근 4년 예상 판매량 추이
             </h3>
@@ -37,7 +37,7 @@
               총 {{ selectedItem.totalSales.toLocaleString() }}개
             </span>
           </div>
-          <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
+          <div class="bg-white dark:bg-[#1E293B]border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
             <div class="flex justify-end gap-4 mb-8 min-w-[350px]">
               <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-gray-500">
                 <span class="w-3 h-3 rounded-sm bg-blue-500"></span>연간 판매량
@@ -65,11 +65,11 @@
         </div>
 
         <div v-if="selectedItem?.priceHistory && selectedItem.priceHistory.length > 0">
-          <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-slate-200 mb-4 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
             최근 4년 예상 도/소매가 추이
           </h3>
-          <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
+          <div class="bg-white dark:bg-[#1E293B]border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
             <div class="flex justify-end gap-4 mb-8 min-w-[350px]">
               <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-gray-500"><span class="w-3 h-3 rounded-sm bg-sky-500"></span>도매가(B2B)</div>
               <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-gray-500"><span class="w-3 h-3 rounded-sm bg-blue-800"></span>소매가(B2C)</div>
@@ -102,9 +102,9 @@
           </div>
         </div>
 
-        <div v-if="selectedItem?.customAnalyses && selectedItem.customAnalyses.length > 0" class="pt-6 border-t border-gray-100">
+        <div v-if="selectedItem?.customAnalyses && selectedItem.customAnalyses.length > 0" class="pt-6 border-t dark:border-slate-700/50">
           <div class="flex items-center justify-between">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
+            <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-slate-200 flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
               추가 분석 내용
             </h3>
@@ -116,15 +116,15 @@
 
       </div>
 
-      <div class="px-6 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t border-gray-100 flex justify-end shrink-0">
+      <div class="px-6 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t dark:border-slate-700/50 flex justify-end shrink-0">
         <button @click="$emit('close')" class="w-full sm:w-auto px-8 py-2.5 bg-blue-900 text-white text-sm font-bold rounded-xl hover:bg-blue-600 transition-colors shadow-md">
           닫기
         </button>
       </div>
 
       <div v-if="showCustomDetails" class="absolute inset-0 z-50 bg-white/95 backdrop-blur-sm flex flex-col overflow-hidden">
-        <div class="px-6 sm:px-8 py-4 sm:py-5 border-b border-gray-100 flex justify-between items-center bg-white shadow-sm shrink-0">
-          <h3 class="font-bold text-gray-900 text-lg">AI 추가 분석 상세</h3>
+        <div class="px-6 sm:px-8 py-4 sm:py-5 border-b dark:border-slate-700/50 flex justify-between items-center bg-white dark:bg-[#1E293B]shadow-sm shrink-0">
+          <h3 class="font-bold text-gray-900 dark:text-slate-200 text-lg">AI 추가 분석 상세</h3>
           <button @click="showCustomDetails = false" class="p-2 text-gray-400 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
