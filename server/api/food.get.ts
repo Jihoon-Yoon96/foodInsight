@@ -18,7 +18,6 @@ export default defineEventHandler(async (event) => {
     let primaryKey = '';
     let primaryValue = '';
 
-    // 💡 변경된 부분: 1순위 검색어를 '품목유형(PRDLST_DCNM)'으로 가장 먼저 확인하도록 변경
     if (typeQ) { primaryKey = 'PRDLST_DCNM'; primaryValue = typeQ; }
     else if (prodQ) { primaryKey = 'PRDLST_NM'; primaryValue = prodQ; }
     else if (factQ) { primaryKey = 'BSSH_NM'; primaryValue = factQ; }
@@ -32,19 +31,15 @@ export default defineEventHandler(async (event) => {
     const END_IDX = '1000';
 
     const API_URL = `http://openapi.foodsafetykorea.go.kr/api/${API_KEY}/${SERVICE_ID}/${DATA_TYPE}/${START_IDX}/${END_IDX}${filterPath}`;
-    console.log(`=====================`)
-    console.log(`typeQ: ${typeQ}`)
-    console.log(`API_URL: ${API_URL}`)
-
 
     try {
+        // 💡 1. 응답시간 10초(10000ms) 초과 시 강제 종료
         const response: any = await $fetch(API_URL, {
             method: 'GET',
-            timeout: 8000 // 응답시간 8초 초과시 종료처리
+            timeout: 10000
         });
+
         const serviceData = response[SERVICE_ID];
-        console.log(response)
-        console.log(`=====================`)
 
         if (!serviceData || serviceData.RESULT?.CODE !== 'INFO-000') {
             return { items: [], total: 0 };
@@ -54,7 +49,6 @@ export default defineEventHandler(async (event) => {
 
         const normalize = (str: any) => String(str || '').replace(/\s+/g, '').toLowerCase();
 
-        // 2. 2차 필터링 로직 (Nitro 서버 메모리 단에서 수행)
         const hasAnyFilter = !!(prodQ || factQ || typeQ);
 
         if (hasAnyFilter) {
@@ -73,7 +67,6 @@ export default defineEventHandler(async (event) => {
             }
         }
 
-        // 3. 정렬 로직 (Sorting)
         if (sort === 'name') {
             resultItems.sort((a: any, b: any) => {
                 const nameA = a.PRDLST_NM || '';
@@ -88,7 +81,6 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        // 4. 페이징 처리 (Slice)
         const totalCount = resultItems.length;
         const startIndex = (page - 1) * pageSize;
         resultItems = resultItems.slice(startIndex, startIndex + pageSize);
@@ -99,7 +91,8 @@ export default defineEventHandler(async (event) => {
         };
 
     } catch (error: any) {
-        console.error('API 호출 에러:', error.message);
-        return { items: [], total: 0, error: true };
+        console.error('API 호출 에러 (타임아웃 등):', error.message);
+        // 💡 타임아웃 또는 에러 발생 시 프론트엔드가 알 수 있게 플래그 반환
+        return { items: [], total: 0, error: true, isTimeout: true };
     }
 });

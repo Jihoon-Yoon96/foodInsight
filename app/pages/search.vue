@@ -179,8 +179,7 @@ const route = useRoute()
 const router = useRouter()
 
 const searchForm = reactive({
-  // 💡 검색어가 없을 경우 기본값을 '유제품'로 강제 고정
-  type: route.query.type || '유제품',
+  type: route.query.type || '우유',
   productName: route.query.prod || '',
   factoryName: route.query.fact || ''
 })
@@ -214,6 +213,49 @@ const formatDate = (dateString) => {
   if (!dateString || dateString.length !== 8) return dateString || '-'
   return `${dateString.slice(0, 4)}.${dateString.slice(4, 6)}.${dateString.slice(6, 8)}`
 }
+
+// ==========================================
+// 💡 더미 데이터 생성 및 처리 로직 (나중에 100개로 교체될 영역)
+// ==========================================
+const getDummyDataList = (type) => {
+  // TODO: 다음 명령에서 여기에 품목유형별 100개의 더미데이터 배열을 세팅할 예정입니다.
+  // 임시로 15개의 더미 데이터를 동적으로 생성해 화면에 보여줍니다.
+  return Array.from({ length: 15 }, (_, i) => ({
+    PRDLST_REPORT_NO: `DUMMY-${type}-${20240000 + i}`,
+    PRDLST_NM: `[임시 더미] 맛있는 ${type} ${i + 1}호`,
+    BSSH_NM: `테스트 제조사 (더미)`,
+    PRDLST_DCNM: type,
+    RAWMTRL_NM: `원유, 정제수, 더미성분`,
+    PRMS_DT: `202401${String(i + 1).padStart(2, '0')}`
+  }));
+}
+
+const applyDummyDataFallback = () => {
+  const targetType = searchForm.type || '우유';
+  let dummyItems = getDummyDataList(targetType);
+
+  // 더미 데이터 안에서 2차 검색(품목명, 제조사명) 적용
+  if (searchForm.productName) {
+    dummyItems = dummyItems.filter(item => item.PRDLST_NM.includes(searchForm.productName));
+  }
+  if (searchForm.factoryName) {
+    dummyItems = dummyItems.filter(item => item.BSSH_NM.includes(searchForm.factoryName));
+  }
+
+  // 정렬 처리
+  if (sortOrder.value === 'name') {
+    dummyItems.sort((a, b) => a.PRDLST_NM.localeCompare(b.PRDLST_NM, 'ko'));
+  } else {
+    dummyItems.sort((a, b) => Number(b.PRMS_DT) - Number(a.PRMS_DT));
+  }
+
+  // 페이징 처리
+  totalItems.value = dummyItems.length;
+  const pageSize = 10;
+  const startIndex = (currentPage.value - 1) * pageSize;
+  items.value = dummyItems.slice(startIndex, startIndex + pageSize);
+}
+// ==========================================
 
 const openReportModal = async (item) => {
   selectedItem.value = item
@@ -292,7 +334,7 @@ const clearRecentSearches = () => {
 }
 
 const clickRecentSearch = (item) => {
-  searchForm.type = item.query.type || '유제품'
+  searchForm.type = item.query.type || '우유'
   searchForm.productName = item.query.prod || ''
   searchForm.factoryName = item.query.fact || ''
   refreshData()
@@ -311,12 +353,26 @@ const fetchFoodData = async () => {
         sort: sortOrder.value
       }
     })
-    items.value = response?.items || []
-    totalItems.value = response?.total || 0
+
+    // 💡 2. 응답 지연/에러 처리 (타임아웃 감지 시 더미데이터 로드)
+    if (response.isTimeout || response.error) {
+      console.warn("==================================================");
+      console.warn("🚨 공공데이터 API 응답시간(10초) 초과 🚨");
+      console.warn(`선택된 유형('${searchForm.type || '우유'}')의 더미 데이터를 표기합니다.`);
+      console.warn("==================================================");
+
+      applyDummyDataFallback();
+    } else {
+      items.value = response?.items || []
+      totalItems.value = response?.total || 0
+    }
+
     saveRecentSearch(searchForm)
     if (process.client) window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
-    items.value = []
+    // 네트워크 단절 등 아예 fetch 자체가 실패했을 때도 더미데이터 노출
+    console.warn("네트워크 또는 서버 에러 발생: 더미 데이터를 표기합니다.");
+    applyDummyDataFallback();
   } finally {
     pending.value = false
   }
@@ -363,13 +419,14 @@ watch(isEditingPage, (newVal) => {
 })
 
 watch(() => route.query, (newQ) => {
-  // 💡 라우터가 변경될 때도 값이 없으면 '유제품' 유지
-  searchForm.type = newQ.type || '유제품'
+  searchForm.type = newQ.type || '우유'
   searchForm.productName = newQ.prod || ''
   searchForm.factoryName = newQ.fact || ''
   currentPage.value = Number(newQ.page) || 1
   sortOrder.value = newQ.sort || 'recent'
-  if (items.value.length === 0) fetchFoodData()
+
+  // 쿼리가 변경되었을 때 데이터 다시 불러오기 로직 강화
+  fetchFoodData()
 }, { deep: true })
 </script>
 
