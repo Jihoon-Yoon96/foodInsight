@@ -10,13 +10,24 @@
       </p>
     </div>
 
-    <div class="w-full max-w-5xl bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl flex flex-col md:flex-row items-stretch overflow-hidden border border-blue-100 dark:border-slate-700/50 transition-colors">
+    <div class="w-full max-w-6xl bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl flex flex-col md:flex-row items-stretch overflow-hidden border border-blue-100 dark:border-slate-700/50 transition-colors">
+
+      <div class="flex-1 border-b md:border-b-0 md:border-r border-gray-100 dark:border-slate-700/50 p-4 md:p-6 group focus-within:bg-blue-50 dark:focus-within:bg-slate-800 transition-colors">
+        <label class="block text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 uppercase tracking-wider">유형</label>
+        <select
+            v-model="searchForm.type"
+            class="w-full bg-transparent text-lg font-semibold text-gray-900 dark:text-slate-200 focus:outline-none cursor-pointer appearance-none"
+        >
+          <option v-for="cat in CATEGORY_OPTIONS" :key="cat" :value="cat" class="dark:bg-[#1E293B]">{{ cat }}</option>
+        </select>
+      </div>
+
       <div class="flex-1 border-b md:border-b-0 md:border-r border-gray-100 dark:border-slate-700/50 p-4 md:p-6 group focus-within:bg-blue-50 dark:focus-within:bg-slate-800 transition-colors">
         <label class="block text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 uppercase tracking-wider">품목명</label>
         <input
             v-model="searchForm.productName"
             type="text"
-            placeholder="제품명을 입력하세요 (예: 토마토)"
+            placeholder="제품명을 입력하세요 (예: 핫도그)"
             class="w-full bg-transparent text-lg font-semibold text-gray-900 dark:text-slate-200 focus:outline-none placeholder:text-gray-300 dark:placeholder:text-slate-500"
             @keyup.enter="handleSearch"
         />
@@ -27,7 +38,7 @@
         <input
             v-model="searchForm.factoryName"
             type="text"
-            placeholder="제조사명 입력 (예: 오뚜기)"
+            placeholder="제조사명 입력 (예: 풀무원)"
             class="w-full bg-transparent text-lg font-semibold text-gray-900 dark:text-slate-200 focus:outline-none placeholder:text-gray-300 dark:placeholder:text-slate-500"
             @keyup.enter="handleSearch"
         />
@@ -44,7 +55,6 @@
     </div>
 
     <div class="mt-16 w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
-
       <div class="bg-white dark:bg-[#1E293B] p-6 md:p-8 rounded-3xl shadow-sm border border-blue-50 dark:border-slate-700/50 flex flex-col hover:border-blue-200 dark:hover:border-slate-500/50 hover:shadow-md transition-all duration-300 h-[420px]">
         <div class="flex items-center gap-4 mb-6">
           <div class="p-3 bg-blue-50 dark:bg-slate-800 rounded-xl transition-colors">
@@ -125,9 +135,14 @@
 </template>
 
 <script setup>
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { CATEGORY_OPTIONS } from '~/utils/constants'
+
 const router = useRouter()
 
 const searchForm = reactive({
+  type: '가공유', // 💡 기본 타입 지정
   productName: '',
   factoryName: ''
 })
@@ -136,7 +151,6 @@ const recentSearches = ref([])
 const dashboardItems = ref([])
 const dashboardSortOrder = ref('recent') // recent, wholesale, retail
 
-// 모달 상태
 const isModalOpen = ref(false)
 const selectedDashboardItem = ref(null)
 
@@ -148,13 +162,15 @@ onMounted(() => {
 })
 
 const handleSearch = () => {
-  if (!searchForm.productName && !searchForm.factoryName) {
+  if (!searchForm.type && !searchForm.productName && !searchForm.factoryName) {
     alert('검색어를 입력해 주세요.')
     return
   }
+  // 💡 라우터 파라미터에 type 추가
   router.push({
     path: '/search',
     query: {
+      type: searchForm.type || undefined,
       prod: searchForm.productName || undefined,
       fact: searchForm.factoryName || undefined
     }
@@ -165,6 +181,7 @@ const clickRecentSearch = (item) => {
   router.push({
     path: '/search',
     query: {
+      type: item.query.type || undefined,
       prod: item.query.prod || undefined,
       fact: item.query.fact || undefined,
       page: 1
@@ -172,29 +189,24 @@ const clickRecentSearch = (item) => {
   })
 }
 
-// 아이템의 가장 최신(마지막 배열) 가격 가져오기
 const getLatestPrice = (item) => {
   if (!item.priceHistory || item.priceHistory.length === 0) return { wholesale: 0, retail: 0 }
   return item.priceHistory[item.priceHistory.length - 1]
 }
 
-// 대시보드 정렬 로직 (Computed)
 const sortedDashboardItems = computed(() => {
   const items = [...dashboardItems.value]
 
   if (dashboardSortOrder.value === 'recent') {
     return items.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))
   } else if (dashboardSortOrder.value === 'wholesale') {
-    // 도매가 내림차순 (비싼 순)
     return items.sort((a, b) => getLatestPrice(b).wholesale - getLatestPrice(a).wholesale)
   } else if (dashboardSortOrder.value === 'retail') {
-    // 소매가 내림차순 (비싼 순)
     return items.sort((a, b) => getLatestPrice(b).retail - getLatestPrice(a).retail)
   }
   return items
 })
 
-// 대시보드 모달 열기/닫기
 const openDashboardModal = (item) => {
   selectedDashboardItem.value = item
   isModalOpen.value = true
@@ -208,13 +220,23 @@ const closeDashboardModal = () => {
 
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #E5E7EB;
+  background-color: #cbd5e1;
   border-radius: 10px;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #94a3b8;
+}
+
+:deep(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #334155;
+}
+:deep(.dark) .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #475569;
 }
 </style>
