@@ -9,14 +9,6 @@
 
         <div class="flex-1 w-full lg:max-w-3xl lg:ml-auto">
           <div class="flex flex-col sm:flex-row items-stretch w-full bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-slate-700/50 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 dark:focus-within:ring-blue-500/50 transition-all shadow-inner sm:h-12">
-            <select
-                v-model="searchForm.type"
-                class="bg-transparent py-3 sm:py-2 px-3 outline-none text-sm font-semibold border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-slate-700/50 text-gray-700 dark:text-slate-200 cursor-pointer w-full sm:w-36 shrink-0 dark:bg-[#0F172A]"
-                @change="refreshData"
-            >
-              <option v-for="cat in CATEGORY_OPTIONS" :key="cat" :value="cat" class="dark:bg-[#1E293B]">{{ cat }}</option>
-            </select>
-
             <input
                 v-model="searchForm.productName"
                 type="text"
@@ -42,6 +34,25 @@
 
       <div class="flex-1 overflow-y-auto p-6 sm:p-10 custom-scrollbar relative">
         <div class="max-w-7xl mx-auto">
+
+          <div class="mb-6 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-slate-700/50 rounded-2xl p-5 shadow-sm transition-colors">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-gray-900 dark:text-white transition-colors">제품유형 필터</h3>
+              <button @click="clearFilters" v-if="selectedTypes.length > 0" class="text-[11px] font-bold text-gray-400 hover:text-blue-500 transition-colors">필터 초기화</button>
+            </div>
+            <div class="flex flex-wrap gap-2 sm:gap-3">
+              <label v-for="cat in CATEGORY_OPTIONS" :key="cat" class="cursor-pointer flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors">
+                <input
+                    type="checkbox"
+                    :value="cat"
+                    v-model="selectedTypes"
+                    @change="refreshData"
+                    class="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-500 transition-colors cursor-pointer"
+                />
+                <span class="text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors select-none">{{ cat }}</span>
+              </label>
+            </div>
+          </div>
 
           <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
             <div>
@@ -142,7 +153,6 @@
 
 <script setup>
 import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
-// 💡 상수 모듈 임포트 추가
 import { CATEGORY_OPTIONS } from '~/utils/constants'
 import { DUMMY_FOOD_DATA } from '~/utils/dummyData'
 
@@ -150,10 +160,13 @@ const route = useRoute()
 const router = useRouter()
 
 const searchForm = reactive({
-  type: route.query.type || '가공유',
   productName: route.query.prod || '',
   factoryName: route.query.fact || ''
 })
+
+// 💡 다중 필터 관리를 위한 배열 추가
+const initialTypes = route.query.types ? route.query.types.split(',') : []
+const selectedTypes = ref(initialTypes)
 
 const items = ref([])
 const totalItems = ref(0)
@@ -161,7 +174,6 @@ const currentPage = ref(Number(route.query.page) || 1)
 const sortOrder = ref(route.query.sort || 'recent')
 const pending = ref(false)
 
-const recentSearches = ref([]) // 백그라운드 기록 관리를 위해 유지
 const isEditingPage = ref(false)
 const inputPage = ref(currentPage.value)
 const pageInputRef = ref(null)
@@ -173,7 +185,7 @@ const reportData = ref(null)
 
 const createSearchLabel = (form) => {
   const parts = []
-  if (form.type) parts.push(`유형: ${form.type}`)
+  if (selectedTypes.value.length > 0) parts.push(`유형: ${selectedTypes.value.length}개 선택`)
   if (form.productName) parts.push(`품목: ${form.productName}`)
   if (form.factoryName) parts.push(`제조사: ${form.factoryName}`)
   return parts.join(' + ') || '전체'
@@ -185,10 +197,18 @@ const formatDate = (dateString) => {
   return `${dateString.slice(0, 4)}.${dateString.slice(4, 6)}.${dateString.slice(6, 8)}`
 }
 
-const applyDummyDataFallback = () => {
-  const targetType = searchForm.type || '가공유';
-  let dummyItems = DUMMY_FOOD_DATA.filter(item => item.PRDLST_DCNM === targetType);
+const clearFilters = () => {
+  selectedTypes.value = []
+  refreshData()
+}
 
+// 💡 필터 처리 로직 고도화
+const applyDummyDataFallback = () => {
+  let dummyItems = [...DUMMY_FOOD_DATA];
+
+  if (selectedTypes.value.length > 0) {
+    dummyItems = dummyItems.filter(item => selectedTypes.value.includes(item.PRDLST_DCNM));
+  }
   if (searchForm.productName) {
     dummyItems = dummyItems.filter(item => item.PRDLST_NM.includes(searchForm.productName));
   }
@@ -254,27 +274,12 @@ const saveToDashboard = (item, reportResponse) => {
   localStorage.setItem('dashboardItems', JSON.stringify(filtered.slice(0, 20)))
 }
 
-const saveRecentSearch = (form) => {
-  if (!form.type && !form.productName && !form.factoryName) return
-  if (process.server) return
-  const label = createSearchLabel(form)
-  const newEntry = { label, query: { type: form.type, prod: form.productName, fact: form.factoryName } }
-
-  let searches = JSON.parse(localStorage.getItem('recentSearches') || '[]')
-  searches = searches.filter(t => t.label !== label)
-  searches.unshift(newEntry)
-  if (searches.length > 10) searches = searches.slice(0, 10)
-
-  localStorage.setItem('recentSearches', JSON.stringify(searches))
-}
-
 const fetchFoodData = async () => {
-  if (!searchForm.type && !searchForm.productName && !searchForm.factoryName) return
   pending.value = true
   try {
     const response = await $fetch('/api/food', {
       query: {
-        type: searchForm.type || undefined,
+        types: selectedTypes.value.join(',') || undefined,
         prod: searchForm.productName || undefined,
         fact: searchForm.factoryName || undefined,
         page: currentPage.value,
@@ -288,8 +293,6 @@ const fetchFoodData = async () => {
       items.value = response?.items || []
       totalItems.value = response?.total || 0
     }
-
-    saveRecentSearch(searchForm)
   } catch (error) {
     applyDummyDataFallback();
   } finally {
@@ -301,13 +304,13 @@ const changeSort = (sort) => {
   if (sortOrder.value === sort) return
   sortOrder.value = sort
   currentPage.value = 1
-  router.push({ query: { type: searchForm.type || undefined, prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: 1 } })
+  pushRouter()
   fetchFoodData()
 }
 
 const changePage = (newPage) => {
   currentPage.value = newPage
-  router.push({ query: { type: searchForm.type || undefined, prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: newPage } })
+  pushRouter()
   fetchFoodData()
 }
 
@@ -318,10 +321,21 @@ const goToInputPage = () => {
   changePage(targetPage)
 }
 
+const pushRouter = () => {
+  router.push({
+    query: {
+      types: selectedTypes.value.join(',') || undefined,
+      prod: searchForm.productName || undefined,
+      fact: searchForm.factoryName || undefined,
+      sort: sortOrder.value,
+      page: currentPage.value
+    }
+  })
+}
+
 const refreshData = () => {
-  if (!searchForm.type && !searchForm.productName && !searchForm.factoryName) return
   currentPage.value = 1
-  router.push({ query: { type: searchForm.type || undefined, prod: searchForm.productName || undefined, fact: searchForm.factoryName || undefined, sort: sortOrder.value, page: 1 } })
+  pushRouter()
   fetchFoodData()
 }
 
@@ -337,7 +351,8 @@ watch(isEditingPage, (newVal) => {
 })
 
 watch(() => route.query, (newQ) => {
-  searchForm.type = newQ.type || '가공유'
+  const typesArr = newQ.types ? newQ.types.split(',') : []
+  selectedTypes.value = typesArr
   searchForm.productName = newQ.prod || ''
   searchForm.factoryName = newQ.fact || ''
   currentPage.value = Number(newQ.page) || 1

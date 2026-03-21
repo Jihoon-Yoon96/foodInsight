@@ -10,17 +10,7 @@
       </p>
     </div>
 
-    <div class="w-full max-w-6xl bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl flex flex-col md:flex-row items-stretch overflow-hidden border border-blue-100 dark:border-slate-700/50 transition-colors">
-
-      <div class="flex-1 border-b md:border-b-0 md:border-r border-gray-100 dark:border-slate-700/50 p-4 md:p-6 group focus-within:bg-blue-50 dark:focus-within:bg-slate-800 transition-colors">
-        <label class="block text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 uppercase tracking-wider">유형</label>
-        <select
-            v-model="searchForm.type"
-            class="w-full bg-transparent text-lg font-semibold text-gray-900 dark:text-slate-200 focus:outline-none cursor-pointer appearance-none"
-        >
-          <option v-for="cat in CATEGORY_OPTIONS" :key="cat" :value="cat" class="dark:bg-[#1E293B]">{{ cat }}</option>
-        </select>
-      </div>
+    <div class="w-full max-w-5xl bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl flex flex-col md:flex-row items-stretch overflow-hidden border border-blue-100 dark:border-slate-700/50 transition-colors">
 
       <div class="flex-1 border-b md:border-b-0 md:border-r border-gray-100 dark:border-slate-700/50 p-4 md:p-6 group focus-within:bg-blue-50 dark:focus-within:bg-slate-800 transition-colors">
         <label class="block text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 uppercase tracking-wider">품목명</label>
@@ -132,12 +122,10 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { CATEGORY_OPTIONS } from '~/utils/constants'
 
 const router = useRouter()
 
 const searchForm = reactive({
-  type: '가공유',
   productName: '',
   factoryName: ''
 })
@@ -155,14 +143,13 @@ onMounted(() => {
 })
 
 const handleSearch = () => {
-  if (!searchForm.type && !searchForm.productName && !searchForm.factoryName) {
+  if (!searchForm.productName && !searchForm.factoryName) {
     alert('검색 조건을 확인해 주세요.')
     return
   }
   router.push({
     path: '/search',
     query: {
-      type: searchForm.type || undefined,
       prod: searchForm.productName || undefined,
       fact: searchForm.factoryName || undefined
     }
@@ -204,7 +191,6 @@ const closeDashboardModal = () => {
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
-/* 라이트모드 기본 스크롤바 */
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #cbd5e1;
   border-radius: 10px;
@@ -213,7 +199,6 @@ const closeDashboardModal = () => {
   background-color: #94a3b8;
 }
 
-/* 다크모드 스크롤바 (.dark 클래스 하위) */
 :deep(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #334155;
 }
