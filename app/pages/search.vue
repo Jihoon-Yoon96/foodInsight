@@ -8,12 +8,12 @@
         <div class="flex-1 w-full sm:max-w-3xl sm:mx-8">
           <div class="flex flex-col sm:flex-row items-stretch w-full bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all shadow-inner sm:h-12">
 
-            <option value="유제품">유제품</option>
             <select
                 v-model="searchForm.type"
                 class="bg-transparent py-3 sm:py-2 px-3 outline-none text-sm font-semibold border-b sm:border-b-0 sm:border-r border-gray-200 text-gray-700 cursor-pointer w-full sm:w-36 shrink-0"
                 @change="refreshData"
             >
+<!--              <option value="유제품">유제품</option>-->
               <option value="축산품">축산품</option>
               <option value="가공유">가공유</option>
               <option value="유산균음료">유산균음료</option>
@@ -21,9 +21,7 @@
               <option value="유크림">유크림</option>
               <option value="아이스크림믹스">아이스크림믹스</option>
               <option value="커피">커피</option>
-<!--              <option value="음료베이스">음료베이스</option>-->
               <option value="혼합음료">혼합음료</option>
-<!--              <option value="과.채주스">과.채주스</option>-->
               <option value="당류가공품">당류가공품</option>
               <option value="기타가공품">기타가공품</option>
             </select>
@@ -175,11 +173,15 @@
 
 <script setup>
 import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
+// 💡 만들어둔 더미 데이터 임포트
+import { DUMMY_FOOD_DATA } from '~/utils/dummyData'
+
 const route = useRoute()
 const router = useRouter()
 
 const searchForm = reactive({
-  type: route.query.type || '우유',
+  // 💡 기본값을 목록에 있는 '가공유'로 수정
+  type: route.query.type || '가공유',
   productName: route.query.prod || '',
   factoryName: route.query.fact || ''
 })
@@ -215,24 +217,13 @@ const formatDate = (dateString) => {
 }
 
 // ==========================================
-// 💡 더미 데이터 생성 및 처리 로직 (나중에 100개로 교체될 영역)
+// 💡 더미 데이터 호출 로직 교체
 // ==========================================
-const getDummyDataList = (type) => {
-  // TODO: 다음 명령에서 여기에 품목유형별 100개의 더미데이터 배열을 세팅할 예정입니다.
-  // 임시로 15개의 더미 데이터를 동적으로 생성해 화면에 보여줍니다.
-  return Array.from({ length: 15 }, (_, i) => ({
-    PRDLST_REPORT_NO: `DUMMY-${type}-${20240000 + i}`,
-    PRDLST_NM: `[임시 더미] 맛있는 ${type} ${i + 1}호`,
-    BSSH_NM: `테스트 제조사 (더미)`,
-    PRDLST_DCNM: type,
-    RAWMTRL_NM: `원유, 정제수, 더미성분`,
-    PRMS_DT: `202401${String(i + 1).padStart(2, '0')}`
-  }));
-}
-
 const applyDummyDataFallback = () => {
-  const targetType = searchForm.type || '우유';
-  let dummyItems = getDummyDataList(targetType);
+  const targetType = searchForm.type || '가공유';
+
+  // utils/dummyData.js 에서 가져온 전체 1000개 데이터 중 선택된 카테고리(100개)만 필터링
+  let dummyItems = DUMMY_FOOD_DATA.filter(item => item.PRDLST_DCNM === targetType);
 
   // 더미 데이터 안에서 2차 검색(품목명, 제조사명) 적용
   if (searchForm.productName) {
@@ -334,7 +325,7 @@ const clearRecentSearches = () => {
 }
 
 const clickRecentSearch = (item) => {
-  searchForm.type = item.query.type || '우유'
+  searchForm.type = item.query.type || '가공유'
   searchForm.productName = item.query.prod || ''
   searchForm.factoryName = item.query.fact || ''
   refreshData()
@@ -354,11 +345,10 @@ const fetchFoodData = async () => {
       }
     })
 
-    // 💡 2. 응답 지연/에러 처리 (타임아웃 감지 시 더미데이터 로드)
     if (response.isTimeout || response.error) {
       console.warn("==================================================");
       console.warn("🚨 공공데이터 API 응답시간(10초) 초과 🚨");
-      console.warn(`선택된 유형('${searchForm.type || '우유'}')의 더미 데이터를 표기합니다.`);
+      console.warn(`선택된 유형('${searchForm.type || '가공유'}')의 더미 데이터를 표기합니다.`);
       console.warn("==================================================");
 
       applyDummyDataFallback();
@@ -370,7 +360,6 @@ const fetchFoodData = async () => {
     saveRecentSearch(searchForm)
     if (process.client) window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
-    // 네트워크 단절 등 아예 fetch 자체가 실패했을 때도 더미데이터 노출
     console.warn("네트워크 또는 서버 에러 발생: 더미 데이터를 표기합니다.");
     applyDummyDataFallback();
   } finally {
@@ -419,13 +408,12 @@ watch(isEditingPage, (newVal) => {
 })
 
 watch(() => route.query, (newQ) => {
-  searchForm.type = newQ.type || '우유'
+  searchForm.type = newQ.type || '가공유'
   searchForm.productName = newQ.prod || ''
   searchForm.factoryName = newQ.fact || ''
   currentPage.value = Number(newQ.page) || 1
   sortOrder.value = newQ.sort || 'recent'
 
-  // 쿼리가 변경되었을 때 데이터 다시 불러오기 로직 강화
   fetchFoodData()
 }, { deep: true })
 </script>
