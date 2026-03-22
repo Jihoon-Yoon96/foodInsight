@@ -13,14 +13,14 @@
                 v-model="searchForm.productName"
                 type="text"
                 class="flex-1 min-w-0 bg-transparent py-3 sm:py-2 px-4 outline-none text-sm font-semibold text-gray-900 dark:text-slate-200 border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-slate-700/50 placeholder:text-gray-400 dark:placeholder:text-slate-500 placeholder:font-normal"
-                placeholder="품목명 (예: 핫도그)"
+                placeholder="품목명 (예: 컴포즈)"
                 @keyup.enter="handleNewSearch"
             />
             <input
                 v-model="searchForm.factoryName"
                 type="text"
                 class="flex-1 min-w-0 bg-transparent py-3 sm:py-2 px-4 outline-none text-sm font-semibold text-gray-900 dark:text-slate-200 placeholder:text-gray-400 dark:placeholder:text-slate-500 placeholder:font-normal"
-                placeholder="제조사명 (예: 풀무원)"
+                placeholder="제조사명 (예: 동원)"
                 @keyup.enter="handleNewSearch"
             />
             <button @click="handleNewSearch" class="py-3 sm:py-0 px-5 bg-white dark:bg-[#1E293B] border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-slate-700/50 text-gray-400 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center justify-center">

@@ -10,15 +10,6 @@
       <p class="px-4 text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2 transition-colors">Menu</p>
 
       <NuxtLink
-          to="/dashboard"
-          class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors"
-          :class="isActive('/dashboard') ? 'bg-blue-50 dark:bg-blue-600/20 text-blue-700 dark:text-blue-400' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200'"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-        대시보드
-      </NuxtLink>
-
-      <NuxtLink
           to="/search"
           class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors"
           :class="isActive('/search') ? 'bg-blue-50 dark:bg-blue-600/20 text-blue-700 dark:text-blue-400' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200'"
@@ -27,22 +18,34 @@
         데이터 탐색
       </NuxtLink>
 
-      <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200 rounded-xl font-medium transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-        트렌드 분석
-      </a>
+      <NuxtLink
+          to="/competitor"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors"
+          :class="isActive('/competitor') ? 'bg-blue-50 dark:bg-blue-600/20 text-blue-700 dark:text-blue-400' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200'"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+        경쟁사 분석
+      </NuxtLink>
 
-      <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200 rounded-xl font-medium transition-colors">
+<!--      <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200 rounded-xl font-medium transition-colors">-->
+<!--        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>-->
+<!--        트렌드 분석-->
+<!--      </a>-->
+
+      <NuxtLink
+          to="/reports"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors"
+          :class="isActive('/reports') ? 'bg-blue-50 dark:bg-blue-600/20 text-blue-700 dark:text-blue-400' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200'"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
         저장된 리포트
-      </a>
+      </NuxtLink>
     </nav>
   </aside>
 </template>
 
 <script setup>
 const route = useRoute()
-// 현재 경로와 메뉴 경로가 일치하는지 확인하여 활성화 스타일 적용
 const isActive = (path) => route.path === path
 </script>
 

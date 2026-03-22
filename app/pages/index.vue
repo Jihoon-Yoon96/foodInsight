@@ -62,7 +62,7 @@
             AI가 분석한 제품유형별 시장 동향과<br />경쟁업체 데이터를 한눈에 확인하세요.
           </p>
 
-          <NuxtLink to="/dashboard" class="inline-flex items-center justify-center gap-2 bg-white text-blue-700 font-bold px-8 py-3.5 rounded-xl shadow-lg hover:bg-blue-50 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 hover:scale-105 transition-all duration-300 w-full sm:w-auto">
+          <NuxtLink to="/competitor" class="inline-flex items-center justify-center gap-2 bg-white text-blue-700 font-bold px-8 py-3.5 rounded-xl shadow-lg hover:bg-blue-50 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 hover:scale-105 transition-all duration-300 w-full sm:w-auto">
             대시보드로 이동
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
