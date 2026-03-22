@@ -207,9 +207,8 @@
                   <p class="text-[10px] text-gray-400 dark:text-slate-500 transition-colors">출시일자: <span class="font-bold text-gray-600 dark:text-slate-300">{{ formatDate(item.PRMS_DT) }}</span></p>
                 </div>
 
-                <button @click="generateAndOpenDashboardModal(item)" :disabled="reportLoadingId === item.PRDLST_REPORT_NO" class="mt-auto w-full py-2 bg-blue-50 dark:bg-blue-600/20 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white transition-colors border border-blue-100 dark:border-blue-500/30 disabled:opacity-50 flex justify-center items-center">
-                  <span v-if="reportLoadingId === item.PRDLST_REPORT_NO" class="animate-spin h-4 w-4 border-b-2 border-blue-600 dark:border-white rounded-full"></span>
-                  <span v-else>AI 리포트</span>
+                <button @click="openReportModal(item)" class="mt-auto w-full py-2 bg-blue-50 dark:bg-blue-600/20 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white transition-colors border border-blue-100 dark:border-blue-500/30 flex justify-center items-center">
+                  <span>AI 리포트</span>
                 </button>
               </div>
             </div>
@@ -232,10 +231,12 @@
       </div>
     </main>
 
-    <DashboardModal
+    <ReportModal
         :is-open="isModalOpen"
-        :selected-item="selectedDashboardItem"
-        @close="closeDashboardModal"
+        :is-loading="isReportLoading"
+        :selected-item="selectedItem"
+        :report-data="reportData"
+        @close="closeReportModal"
     />
   </div>
 </template>
@@ -251,8 +252,11 @@ const selectedCategory = ref('아이스크림믹스')
 const selectedCompetitor = ref('빙그레')
 const selectedChartType = ref('신제품') // '신제품' | '매출'
 
+// 💡 ReportModal 연동을 위한 상태 변수
 const isModalOpen = ref(false)
-const selectedDashboardItem = ref(null)
+const isReportLoading = ref(false)
+const selectedItem = ref(null)
+const reportData = ref(null)
 
 // -----------------------------------------------------
 // 💡 상단 카드 통계 데이터 로직
@@ -432,7 +436,6 @@ const rawItems = ref([]);
 const pending = ref(false);
 const explorerPage = ref(1);
 const selectedExplorerType = ref('전체');
-const reportLoadingId = ref(null);
 
 const fetchExplorerData = async () => {
   pending.value = true;
@@ -440,7 +443,6 @@ const fetchExplorerData = async () => {
     const response = await $fetch('/api/food', {
       query: { fact: selectedCompetitor.value }
     });
-    // 💡 0건이거나 에러/타임아웃 시 무조건 더미데이터 호출
     if (response.isTimeout || response.error || !response.items || response.items.length === 0) {
       applyDummyDataFallback();
     } else {
@@ -454,7 +456,6 @@ const fetchExplorerData = async () => {
 };
 
 const applyDummyDataFallback = () => {
-  // 💡 데이터가 빈약할 것을 방지하여, 더미데이터의 제조사명을 무조건 선택된 경쟁사로 치환합니다.
   const dummyItems = [...DUMMY_FOOD_DATA].map(item => ({
     ...item,
     BSSH_NM: selectedCompetitor.value
@@ -490,36 +491,51 @@ const setExplorerType = (type) => {
   explorerPage.value = 1;
 };
 
-const generateAndOpenDashboardModal = async (item) => {
-  reportLoadingId.value = item.PRDLST_REPORT_NO;
+// 💡 ReportModal 호출 로직 (search.vue와 동일)
+const openReportModal = async (item) => {
+  selectedItem.value = item;
+  isModalOpen.value = true;
+  isReportLoading.value = true;
+  reportData.value = null;
+
   try {
     const response = await $fetch('/api/report', {
       query: { prod: item.PRDLST_NM, fact: item.BSSH_NM }
     });
-
-    selectedDashboardItem.value = {
-      reportNo: item.PRDLST_REPORT_NO,
-      productName: response.productName,
-      factoryName: response.factoryName,
-      summary: response.summary,
-      annualSales: response.annualSales,
-      totalSales: response.totalSales,
-      priceHistory: response.priceHistory,
-      customAnalyses: []
-    };
-
-    const saved = JSON.parse(localStorage.getItem('dashboardItems') || '[]');
-    const existing = saved.find(x => x.reportNo === item.PRDLST_REPORT_NO);
-    if (existing && existing.customAnalyses) {
-      selectedDashboardItem.value.customAnalyses = existing.customAnalyses;
-    }
-
-    isModalOpen.value = true;
-  } catch (err) {
-    console.error(err);
+    reportData.value = response;
+    saveToDashboard(item, response);
+  } catch (error) {
+    console.error("리포트 생성 실패:", error);
   } finally {
-    reportLoadingId.value = null;
+    isReportLoading.value = false;
   }
+};
+
+const closeReportModal = () => {
+  isModalOpen.value = false;
+  selectedItem.value = null;
+  reportData.value = null;
+};
+
+const saveToDashboard = (item, reportResponse) => {
+  if (process.server) return;
+  const saved = JSON.parse(localStorage.getItem('dashboardItems') || '[]');
+
+  const newEntry = {
+    reportNo: item.PRDLST_REPORT_NO,
+    productName: item.PRDLST_NM,
+    factoryName: item.BSSH_NM,
+    priceHistory: reportResponse.priceHistory,
+    annualSales: reportResponse.annualSales,
+    totalSales: reportResponse.totalSales,
+    summary: reportResponse.summary,
+    savedAt: new Date().toISOString()
+  };
+
+  const filtered = saved.filter(x => x.reportNo !== newEntry.reportNo);
+  filtered.unshift(newEntry);
+
+  localStorage.setItem('dashboardItems', JSON.stringify(filtered.slice(0, 20)));
 };
 
 const formatDate = (dateString) => {
@@ -545,11 +561,6 @@ const selectOption = (type, opt) => {
     selectedChartType.value = opt;
   }
   activeDropdown.value = null;
-}
-
-const closeDashboardModal = () => {
-  isModalOpen.value = false;
-  setTimeout(() => { selectedDashboardItem.value = null }, 300);
 }
 
 watch(selectedCompetitor, () => {
