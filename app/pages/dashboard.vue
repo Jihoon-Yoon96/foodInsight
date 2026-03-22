@@ -73,10 +73,25 @@
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <div class="lg:col-span-2 bg-white dark:bg-[#1E293B] rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700/50 p-6 sm:p-8 transition-colors">
-              <div class="flex items-center justify-between mb-8">
+              <div class="flex items-start justify-between mb-8">
                 <div>
-                  <h3 class="text-lg font-bold text-gray-900 dark:text-white transition-colors">제품유형별 신제품 출시 동향</h3>
-                  <p class="text-xs text-gray-500 dark:text-slate-400 mt-1 transition-colors">최근 6개월 간 주요 제품유형별 신제품 등록 추이</p>
+                  <div class="relative cursor-pointer group inline-flex items-center gap-1" @click.stop="activeDropdown = activeDropdown === 'chartType' ? null : 'chartType'">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white transition-colors select-none">
+                      제품유형별 <span class="text-blue-600 dark:text-blue-400">{{ selectedChartType }}</span> 출시 동향
+                    </h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 transition-transform" :class="{ 'rotate-180': activeDropdown === 'chartType' }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                    </svg>
+
+                    <div v-if="activeDropdown === 'chartType'" class="absolute top-[110%] left-0 w-28 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-slate-600 rounded-xl shadow-xl z-50 overflow-hidden transform opacity-100 transition-all">
+                      <ul class="py-1">
+                        <li @click.stop="selectOption('chartType', '신제품')" class="px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-700 dark:hover:text-blue-400 cursor-pointer transition-colors">신제품</li>
+                        <li @click.stop="selectOption('chartType', '매출')" class="px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-700 dark:hover:text-blue-400 cursor-pointer transition-colors">매출</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <p class="text-xs text-gray-500 dark:text-slate-400 mt-1 transition-colors">최근 6개월 간 주요 제품유형별 등록 추이</p>
                 </div>
                 <div class="flex gap-4 hidden sm:flex">
                   <div class="flex items-center gap-1.5 text-xs font-bold text-gray-600 dark:text-slate-300 transition-colors"><span class="w-3 h-3 rounded-sm bg-blue-500"></span>동원</div>
@@ -119,7 +134,9 @@
 
             <div class="lg:col-span-1 bg-white dark:bg-[#1E293B] rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700/50 p-6 sm:p-8 flex flex-col items-center transition-colors">
               <div class="w-full mb-6">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white transition-colors">제품유형별 비중</h3>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white transition-colors">
+                  <span class="text-blue-600 dark:text-blue-400">{{ selectedCompetitor }}</span> 제품유형별 비중
+                </h3>
               </div>
 
               <div class="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full shrink-0 shadow-lg transition-all" :style="{ background: donutStyle }">
@@ -146,40 +163,69 @@
 
           <div class="mt-8 sm:mt-12">
             <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6">
-              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">최적의 식품 제조 파트너 탐색</h2>
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
+                <span class="text-blue-600 dark:text-blue-400">{{ selectedCompetitor }}</span>의 제품 탐색
+              </h2>
 
               <div class="flex flex-wrap items-center gap-3">
-                <div class="relative group">
-                  <button class="flex items-center gap-1.5 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-slate-700/50 text-gray-700 dark:text-slate-300 text-xs font-medium rounded-xl px-4 py-2.5 shadow-sm hover:border-gray-300 dark:hover:border-slate-600 transition-colors">
-                    <span class="font-bold">최신순</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>
+                <div class="flex items-center gap-1.5 bg-gray-100 dark:bg-[#1E293B] border border-gray-200 dark:border-slate-700/50 rounded-full p-1 shadow-inner transition-colors overflow-x-auto custom-scrollbar">
+                  <button @click="setExplorerType('전체')"
+                          :class="selectedExplorerType === '전체' ? 'bg-white dark:bg-blue-600 text-blue-600 dark:text-white shadow-sm' : 'bg-transparent text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-slate-800'"
+                          class="shrink-0 px-4 py-2 text-xs font-bold rounded-full transition-colors">
+                    전체
                   </button>
-                </div>
-
-                <div class="flex items-center gap-1.5 bg-gray-100 dark:bg-[#1E293B] border border-gray-200 dark:border-slate-700/50 rounded-full p-1 shadow-inner transition-colors">
-                  <button class="px-4 py-2 bg-white dark:bg-blue-600 text-blue-600 dark:text-white text-xs font-bold rounded-full shadow-sm transition-colors">전체</button>
-                  <button class="px-4 py-2 bg-transparent text-gray-500 dark:text-slate-400 text-xs font-medium rounded-full hover:text-gray-900 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-slate-800 transition-colors">가공유</button>
-                  <button class="px-4 py-2 bg-transparent text-gray-500 dark:text-slate-400 text-xs font-medium rounded-full hover:text-gray-900 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-slate-800 transition-colors">농후발효유</button>
-                  <button class="px-4 py-2 bg-transparent text-gray-500 dark:text-slate-400 text-xs font-medium rounded-full hover:text-gray-900 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-slate-800 transition-colors">커피</button>
+                  <button v-for="cat in availableExplorerTypes" :key="cat"
+                          @click="setExplorerType(cat)"
+                          :class="selectedExplorerType === cat ? 'bg-white dark:bg-blue-600 text-blue-600 dark:text-white shadow-sm' : 'bg-transparent text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-slate-800'"
+                          class="shrink-0 px-4 py-2 text-xs font-medium rounded-full transition-colors">
+                    {{ cat }}
+                  </button>
                 </div>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-              <div v-for="i in 10" :key="i" class="bg-white dark:bg-[#1E293B] rounded-2xl p-5 border border-gray-100 dark:border-slate-700/50 hover:border-blue-200 dark:hover:border-blue-500/50 transition-all shadow-sm flex flex-col cursor-pointer group">
+            <div v-if="pending" class="flex justify-center items-center py-20">
+              <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 dark:border-blue-500"></div>
+            </div>
+            <div v-else-if="paginatedExplorerItems.length === 0" class="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-slate-700/50">
+              <p class="text-gray-400 dark:text-slate-400">데이터가 없습니다.</p>
+            </div>
+            <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+              <div v-for="item in paginatedExplorerItems" :key="item.PRDLST_REPORT_NO" class="bg-white dark:bg-[#1E293B] rounded-2xl p-5 border border-gray-100 dark:border-slate-700/50 hover:border-blue-200 dark:hover:border-blue-500/50 transition-all shadow-sm flex flex-col group">
                 <div class="w-full h-32 bg-blue-50 dark:bg-[#0F172A] rounded-xl mb-4 flex items-center justify-center border border-transparent dark:border-slate-800 group-hover:border-blue-100 dark:group-hover:border-slate-600 transition-colors">
                   <svg class="w-8 h-8 text-blue-400 dark:text-slate-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 </div>
-                <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">프리미엄 국내산 제품 {{ i }}호</h4>
-                <p class="text-xs text-gray-500 dark:text-slate-400 mb-4 truncate transition-colors">{{ selectedCompetitor }}</p>
-                <div class="flex items-center gap-2 mb-4">
-                  <span class="text-[10px] font-medium text-gray-600 dark:text-slate-300 bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded transition-colors">정상</span>
-                  <span class="text-[10px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-400/10 px-2 py-1 rounded transition-colors">쿠팡 소싱</span>
+
+                <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ item.PRDLST_NM }}</h4>
+                <p class="text-xs text-gray-500 dark:text-slate-400 mb-3 truncate transition-colors">{{ item.BSSH_NM }}</p>
+
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-[10px] font-medium text-gray-600 dark:text-slate-300 bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded transition-colors">{{ item.PRDLST_DCNM }}</span>
                 </div>
-                <button class="mt-auto w-full py-2 bg-blue-50 dark:bg-blue-600/20 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white transition-colors border border-blue-100 dark:border-blue-500/30">
-                  AI 리포트
+
+                <div class="mb-4">
+                  <p class="text-[10px] text-gray-400 dark:text-slate-500 transition-colors">출시일자: <span class="font-bold text-gray-600 dark:text-slate-300">{{ formatDate(item.PRMS_DT) }}</span></p>
+                </div>
+
+                <button @click="generateAndOpenDashboardModal(item)" :disabled="reportLoadingId === item.PRDLST_REPORT_NO" class="mt-auto w-full py-2 bg-blue-50 dark:bg-blue-600/20 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white transition-colors border border-blue-100 dark:border-blue-500/30 disabled:opacity-50 flex justify-center items-center">
+                  <span v-if="reportLoadingId === item.PRDLST_REPORT_NO" class="animate-spin h-4 w-4 border-b-2 border-blue-600 dark:border-white rounded-full"></span>
+                  <span v-else>AI 리포트</span>
                 </button>
               </div>
+            </div>
+
+            <div class="mt-8 flex justify-center items-center gap-2 flex-wrap" v-if="explorerTotalItems > 0">
+              <button @click="explorerPage--" :disabled="explorerPage === 1" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-slate-700/50 text-gray-400 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-30 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+              </button>
+              <div class="flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-slate-700/50 rounded-lg shadow-sm text-xs font-bold">
+                <span class="text-blue-600 dark:text-blue-400">{{ explorerPage }}</span>
+                <span class="text-gray-300 dark:text-slate-600">/</span>
+                <span class="text-gray-500 dark:text-slate-400">{{ Math.max(1, Math.ceil(explorerTotalItems / 10)) }}</span>
+              </div>
+              <button @click="explorerPage++" :disabled="explorerPage >= Math.ceil(explorerTotalItems / 10)" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-slate-700/50 text-gray-400 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-30 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </button>
             </div>
           </div>
         </div>
@@ -195,13 +241,15 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { CATEGORY_OPTIONS, COMPETITOR_OPTIONS } from '~/utils/constants'
+import { DUMMY_FOOD_DATA } from '~/utils/dummyData'
 
-// 드롭다운 및 선택 상태 관리
+// 드롭다운 및 상태
 const activeDropdown = ref(null)
 const selectedCategory = ref('아이스크림믹스')
 const selectedCompetitor = ref('빙그레')
+const selectedChartType = ref('신제품') // '신제품' | '매출'
 
 const isModalOpen = ref(false)
 const selectedDashboardItem = ref(null)
@@ -270,10 +318,9 @@ const computedStats = computed(() => {
 
 
 // -----------------------------------------------------
-// 💡 제품유형별 비중 도넛 차트 로직 (경쟁업체 값에 따라 데이터 변동)
+// 💡 제품유형별 비중 도넛 차트 로직
 // -----------------------------------------------------
 const dynamicCategoryDataList = computed(() => {
-  // 경쟁업체 이름을 활용한 시드로 각 카테고리별 건수를 무작위이면서 일정하게 생성
   const seedBase = selectedCompetitor.value.charCodeAt(0) + selectedCompetitor.value.length * 5;
 
   const colors = [
@@ -307,7 +354,6 @@ const totalCategoryCount = computed(() => {
 
 const categoryWeights = computed(() => {
   const total = totalCategoryCount.value;
-  // 값이 높은 순서대로 정렬해서 출력
   const sorted = [...dynamicCategoryDataList.value].sort((a, b) => b.value - a.value);
 
   return sorted.map(item => ({
@@ -334,7 +380,7 @@ const donutStyle = computed(() => {
 
 
 // -----------------------------------------------------
-// 💡 출시 동향 라인 차트 (동원 및 경쟁업체 데이터 변동 처리)
+// 💡 출시 동향 라인 차트
 // -----------------------------------------------------
 const last6Months = computed(() => {
   const result = [];
@@ -351,15 +397,20 @@ const last6Months = computed(() => {
 });
 
 const chartPoints = computed(() => {
-  const xs = [8, 25, 42, 59, 75, 92]; // X축 고정 % 좌표
+  const xs = [8, 25, 42, 59, 75, 92];
 
-  // 파란 실선 (동원) - 카테고리가 바뀌면 변경되도록 계산
   const catSeed = selectedCategory.value.charCodeAt(0) + selectedCategory.value.length * 11;
-  const blueValues = xs.map((_, i) => 10 + ((catSeed * (i + 2)) % 70));
-
-  // 초록 점선 (경쟁업체 + 선택된 카테고리 연동 데이터)
   const compSeed = selectedCompetitor.value.charCodeAt(0) + selectedCompetitor.value.length * 7;
-  const greenValues = xs.map((_, i) => 15 + (((compSeed + catSeed) * (i + 3)) % 65));
+
+  let blueValues, greenValues;
+
+  if (selectedChartType.value === '신제품') {
+    blueValues = xs.map((_, i) => 10 + ((catSeed * (i + 2)) % 70));
+    greenValues = xs.map((_, i) => 15 + (((compSeed + catSeed) * (i + 3)) % 65));
+  } else {
+    blueValues = xs.map((_, i) => 100 + ((catSeed * (i + 5)) % 300));
+    greenValues = xs.map((_, i) => 120 + (((compSeed + catSeed) * (i + 7)) % 400));
+  }
 
   const maxVal = Math.max(...blueValues, ...greenValues) * 1.3;
   const toY = (val) => 100 - (val / maxVal * 80) - 10;
@@ -375,7 +426,109 @@ const greenPolyline = computed(() => chartPoints.value.green.map(p => `${p.x},${
 
 
 // -----------------------------------------------------
-// 이벤트 핸들러 및 UI 매핑
+// 💡 파트너 탐색 (API 연동 데이터)
+// -----------------------------------------------------
+const rawItems = ref([]);
+const pending = ref(false);
+const explorerPage = ref(1);
+const selectedExplorerType = ref('전체');
+const reportLoadingId = ref(null);
+
+const fetchExplorerData = async () => {
+  pending.value = true;
+  try {
+    const response = await $fetch('/api/food', {
+      query: { fact: selectedCompetitor.value }
+    });
+    // 💡 0건이거나 에러/타임아웃 시 무조건 더미데이터 호출
+    if (response.isTimeout || response.error || !response.items || response.items.length === 0) {
+      applyDummyDataFallback();
+    } else {
+      rawItems.value = response.items;
+    }
+  } catch (error) {
+    applyDummyDataFallback();
+  } finally {
+    pending.value = false;
+  }
+};
+
+const applyDummyDataFallback = () => {
+  // 💡 데이터가 빈약할 것을 방지하여, 더미데이터의 제조사명을 무조건 선택된 경쟁사로 치환합니다.
+  const dummyItems = [...DUMMY_FOOD_DATA].map(item => ({
+    ...item,
+    BSSH_NM: selectedCompetitor.value
+  }));
+  rawItems.value = dummyItems;
+};
+
+const availableExplorerTypes = computed(() => {
+  const typesSet = new Set(rawItems.value.map(item => item.PRDLST_DCNM).filter(Boolean));
+  return CATEGORY_OPTIONS.filter(cat => typesSet.has(cat));
+});
+
+const filteredExplorerItems = computed(() => {
+  let items = rawItems.value.filter(item => CATEGORY_OPTIONS.includes(item.PRDLST_DCNM));
+
+  if (selectedExplorerType.value !== '전체') {
+    items = items.filter(item => item.PRDLST_DCNM === selectedExplorerType.value);
+  }
+
+  items.sort((a, b) => Number(b.PRMS_DT) - Number(a.PRMS_DT));
+  return items;
+});
+
+const explorerTotalItems = computed(() => filteredExplorerItems.value.length);
+
+const paginatedExplorerItems = computed(() => {
+  const start = (explorerPage.value - 1) * 10;
+  return filteredExplorerItems.value.slice(start, start + 10);
+});
+
+const setExplorerType = (type) => {
+  selectedExplorerType.value = type;
+  explorerPage.value = 1;
+};
+
+const generateAndOpenDashboardModal = async (item) => {
+  reportLoadingId.value = item.PRDLST_REPORT_NO;
+  try {
+    const response = await $fetch('/api/report', {
+      query: { prod: item.PRDLST_NM, fact: item.BSSH_NM }
+    });
+
+    selectedDashboardItem.value = {
+      reportNo: item.PRDLST_REPORT_NO,
+      productName: response.productName,
+      factoryName: response.factoryName,
+      summary: response.summary,
+      annualSales: response.annualSales,
+      totalSales: response.totalSales,
+      priceHistory: response.priceHistory,
+      customAnalyses: []
+    };
+
+    const saved = JSON.parse(localStorage.getItem('dashboardItems') || '[]');
+    const existing = saved.find(x => x.reportNo === item.PRDLST_REPORT_NO);
+    if (existing && existing.customAnalyses) {
+      selectedDashboardItem.value.customAnalyses = existing.customAnalyses;
+    }
+
+    isModalOpen.value = true;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    reportLoadingId.value = null;
+  }
+};
+
+const formatDate = (dateString) => {
+  if (!dateString || dateString.length !== 8) return dateString || '-';
+  return `${dateString.slice(0, 4)}.${dateString.slice(4, 6)}.${dateString.slice(6, 8)}`;
+};
+
+// -----------------------------------------------------
+// UI 상호작용 및 Watcher
 // -----------------------------------------------------
 const handleCardClick = (stat) => {
   if (stat.isDropdown) {
@@ -385,33 +538,43 @@ const handleCardClick = (stat) => {
 
 const selectOption = (type, opt) => {
   if (type === 'category') {
-    selectedCategory.value = opt
+    selectedCategory.value = opt;
   } else if (type === 'competitor') {
-    selectedCompetitor.value = opt
+    selectedCompetitor.value = opt;
+  } else if (type === 'chartType') {
+    selectedChartType.value = opt;
   }
-  activeDropdown.value = null
+  activeDropdown.value = null;
 }
 
 const closeDashboardModal = () => {
-  isModalOpen.value = false
-  setTimeout(() => { selectedDashboardItem.value = null }, 300)
+  isModalOpen.value = false;
+  setTimeout(() => { selectedDashboardItem.value = null }, 300);
 }
 
+watch(selectedCompetitor, () => {
+  explorerPage.value = 1;
+  selectedExplorerType.value = '전체';
+  fetchExplorerData();
+});
+
+onMounted(() => {
+  fetchExplorerData();
+});
+
+// 컬러 매퍼 로직
 const getCardBgClass = (status) => {
   if (status === 'focus') return 'bg-blue-50 dark:bg-[#111A2C] border-blue-200 dark:border-[#2B4168]';
   return 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-slate-700/50';
 }
-
 const getLabelClass = (status) => {
   if (status === 'focus') return 'text-blue-600 dark:text-[#608BCE]';
   return 'text-gray-500 dark:text-slate-400';
 }
-
 const getValueClass = (status) => {
   if (status === 'focus') return 'text-blue-900 dark:text-white';
   return 'text-gray-900 dark:text-white';
 }
-
 const getStatusClass = (status) => {
   const map = {
     normal: 'text-gray-500 dark:text-slate-400',
@@ -422,7 +585,6 @@ const getStatusClass = (status) => {
   }
   return map[status] || 'text-gray-500 dark:text-slate-400'
 }
-
 const getHoverBorderClass = (status) => {
   const map = {
     normal: 'hover:border-gray-300 dark:hover:border-slate-500/50',
@@ -438,6 +600,7 @@ const getHoverBorderClass = (status) => {
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
